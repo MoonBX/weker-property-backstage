@@ -34,7 +34,7 @@ function doorCtl($modal) {
   }
 }
 
-function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $stateParams, doorSrv, mainSrv, toastr) {
+function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorSrv, mainSrv, toastr) {
   var vm = this;
   vm.getResidentList = getResidentList;
   vm.selectPage = selectPage;
@@ -97,16 +97,6 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
       console.log(res);
       vm.block.rooms = res.data;
     })
-  }
-
-  vm.openAside = openAside;
-  function openAside(){
-    console.log('open');
-    $aside.open({
-      templateUrl: 'views/door/aside.demo.tpl.html',
-      backdrop: true,
-      controller: ''
-    });
   }
 
   checkFilter();
@@ -457,12 +447,6 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
       vm.userType_make_me = false;
       vm.postList.effectiveType = 1;
     }
-  }
-
-  vm.compareIdident = compareIdident;
-  function compareIdident(){
-    console.log('ain');
-
   }
 
   vm.radio_change = radio_change;
