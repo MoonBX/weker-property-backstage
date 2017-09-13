@@ -1,0 +1,206 @@
+<div class="content-head">
+  {{createVm.title}}
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="createVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="houseForm"
+      novalidate>
+  <div class="other-info b-b">
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[(!houseForm.name.$valid&& (houseForm.name.$dirty || houseForm.submitted)) || (!houseForm.userType.$valid&& (houseForm.userType.$dirty || houseForm.submitted))]">
+      <label class="w-label-control" style="width: 65px;">住户姓名:</label>
+      <input type="text"
+             ng-model="createVm.postList.name"
+             class="w-sm p-h-xs m-r-md pull-left w-form-control"
+             style="width: 180px;"
+             name="name"
+             required>
+
+      <div class="form-error-box"
+           ng-if="houseForm.name.$dirty||houseForm.submitted">
+       <span class="form-error" ng-show="houseForm.name.$error.required">
+          住户姓名不能为空
+        </span>
+      </div>
+
+      <label class="w-label-control" style="width: 65px;">住户身份:</label>
+      <div class="w-sm pull-left m-r-lg">
+        <!--<my-select model="createVm.postList.userType"-->
+        <!--placeholder="请选择人员身份"-->
+        <!--opt-list="['户主', '家人', '租客']">-->
+        <!--</my-select>-->
+        <select ui-select2
+                ng-model="createVm.postList.userType"
+                data-placeholder="请选择住户身份"
+                name="userType"
+                ng-change="createVm.userType_change_to_effectiveTime(createVm.postList.userType)">
+          <option value=""></option>
+          <option ng-value="0">户主</option>
+          <option ng-value="1">家人</option>
+          <option ng-value="2">租客</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!houseForm.mobile.$valid&& (houseForm.mobile.$dirty || houseForm.submitted)]">
+      <label class="w-label-control" style="width: 65px;">手机号码:</label>
+      <input type="text"
+             ng-model="createVm.postList.mobile"
+             class="w-sm p-h-xs m-r-md pull-left w-form-control"
+             style="width: 230px;"
+             ng-pattern="/(^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$)|(^((\(\d{3}\))|(\d{3}\-))?(1[3578]\d{9})$)/"
+             name="mobile"
+             required>
+
+      <div class="form-error-box"
+           ng-if="houseForm.mobile.$dirty||houseForm.submitted">
+       <span class="form-error" ng-show="houseForm.mobile.$error.required">
+          手机号码不能为空
+        </span>
+        <span class="form-error" ng-show="houseForm.mobile.$error.pattern">
+          手机号码格式不正确
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!houseForm.idCard.$valid&& (houseForm.idCard.$dirty || houseForm.submitted)]">
+      <label class="w-label-control" style="width: 65px;">身份证号:</label>
+      <input type="text"
+             ng-model="createVm.postList.idCard"
+             class="w-sm p-h-xs m-r-md pull-left w-form-control"
+             style="width: 290px;"
+             name="idCard"
+             required>
+      <!--<a href="javascript:;" ng-click="createVm.compareIdident()">比对</a>-->
+      <div class="form-error-box"
+           ng-if="houseForm.idCard.$dirty||houseForm.submitted">
+       <span class="form-error" ng-show="houseForm.idCard.$error.required">
+          身份证号不能为空
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!houseForm.fanghao.$valid&& (houseForm.fanghao.$dirty || houseForm.submitted)]">
+      <label class="w-label-control" style="width: 65px;">住户房号:</label>
+      <my-cascade-check partition-id="createVm.postList.partitionId"
+                        block-id="createVm.postList.blockId"
+                        unit-id="createVm.postList.unitId"
+                        room-id="createVm.postList.roomNoId"
+                        get-blocks="createVm.getBlocks(partitionId)"
+                        get-units="createVm.getUnits(blockId)"
+                        get-rooms="createVm.getRooms(unitId)"
+                        check-entrance-exist="createVm.checkEntranceExist(partitionId)"
+                        partitions="createVm.block.partitions"
+                        blocks="createVm.block.blocks"
+                        units="createVm.block.units"
+                        rooms="createVm.block.rooms">
+      </my-cascade-check>
+      <div class="form-error-box"
+           ng-if="houseForm.fanghao.$dirty||houseForm.submitted">
+       <span class="form-error" ng-show="houseForm.fanghao.$error.required">
+          房号不能为空
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative m-b-md"
+         ng-if="createVm.isEntranceExist">
+      <label class="w-label-control" style="width: 65px;">有效时间:</label>
+      <div class="pull-left m-r-lg" style="line-height: 27px">
+        <label class="ui-checks" ng-if="createVm.userEffectStatus == 0 || createVm.userEffectStatus == 1">
+          <input type="radio" name="a"
+                 ng-model="createVm.postList.effectiveType"
+                 ng-value="0"
+                 ng-click="createVm.radio_change()"
+                 ng-checked="createVm.userType_make_me">
+          <i></i>
+          永久
+        </label>
+        <label class="ui-checks m-l-xs" ng-if="createVm.userEffectStatus == 2 || createVm.userEffectStatus == 1">
+          <input type="radio" name="a"
+                 ng-value="1"
+                 ng-model="createVm.postList.effectiveType"
+                 ng-click="createVm.radio_change()"
+                 ng-checked="!createVm.userType_make_me">
+          <i></i>
+          手动配置
+        </label>
+      </div>
+      <div class="pull-left" ng-if="(createVm.userEffectStatus == 2 || createVm.userEffectStatus == 1)&&!createVm.userType_make_me">
+        <input type="text"
+               ng-model="createVm.postList.effectiveStartTime"
+               class="form-control w-sm pull-left m-r-xs bg-date"
+               data-date-format="yyyy-MM-dd"
+               data-date-type="number"
+               data-min-date="today"
+               data-autoclose="1"
+               bs-datepicker
+               required
+               placeholder="请选择起始时间"
+               name="effectiveStartTime"
+        />
+        <label class="pull-left datepicker-split">—</label>
+        <input type="text"
+               ng-model="createVm.postList.effectiveEndTime"
+               class="form-control w-sm pull-left m-r-lg bg-date"
+               data-date-format="yyyy-MM-dd"
+               data-date-type="number"
+               data-min-date="{{createVm.postList.effectiveStartTime}}"
+               data-autoclose="1"
+               bs-datepicker
+               required
+               name="effectiveEndTime"
+               placeholder="请选择结束时间"
+        />
+      </div>
+      <div class="form-error-box m-b-sm"
+           ng-if="houseForm.effectiveStartTime.$dirty||houseForm.effectiveEndTime.$dirty||houseForm.submitted">
+       <span class="form-error"
+             ng-show="houseForm.effectiveStartTime.$error.required||houseForm.effectiveEndTime.$error.required">
+          有效时间不能为空
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <iframe name="myFrame"
+          src="./views/door/ocx/ocx.html"
+          width="100%" height="300px"
+          frameborder="no"
+          border="0">
+  </iframe>
+
+  <div class="row m-b-md text-center">
+    <button class="btn btn-sm btn-primary p-h-lg m-r-sm"
+            ng-click="createVm.createResident(createVm.postList)">
+      保&nbsp;存
+    </button>
+    <button class="btn btn-sm btn-primary btn-stroke p-h-lg"
+            ng-click="createVm.cancel()">
+      取&nbsp;消
+    </button>
+  </div>
+</form>
+<style>
+  .modal-content {
+    width: 650px;
+  }
+
+  .form-error-box {
+    position: absolute;
+    bottom: -20px;
+    left: 74px;
+    font-size: 12px;
+  }
+
+  .pos-relative {
+    position: relative;
+  }
+</style>

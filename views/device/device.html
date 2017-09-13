@@ -1,0 +1,119 @@
+<div class="position-right">
+  <div class="panel m-v-lg m-h-sm">
+    <div class="panel-body p-box-shadow">
+
+      <div class="g-table-banner b-b p-v-md p-h-md">
+        <div class="tb-flex">
+          <div class="item m-b-sm">
+            <label class="w-label-control">位置信息: </label>
+            <my-cascade-three partition-id="deviceVm.selectList.partitionId"
+                        block-id="deviceVm.selectList.blockId"
+                        unit-id="deviceVm.selectList.unitId"
+                        get-blocks="deviceVm.getBlocks(partitionId)"
+                        get-units="deviceVm.getUnits(blockId)"
+                        partitions="deviceVm.block.partitions"
+                        blocks="deviceVm.block.blocks"
+                        units="deviceVm.block.units">
+            </my-cascade-three>
+          </div>
+
+          <div class="item m-b-sm">
+            <label class="w-label-control">设备类型: </label>
+            <div class="w-sm pull-left m-r-lg">
+              <my-select model="deviceVm.selectList.type"
+                         placeholder="请选择设备类型"
+                         opt-list="['围墙机', '单元机']">
+              </my-select>
+            </div>
+          </div>
+
+          <div class="item m-b-md">
+            <label class="w-label-control">设备状态: </label>
+            <div class="w-sm pull-left m-r-lg">
+              <my-select model="deviceVm.selectList.status"
+                         placeholder="请选择设备状态"
+                         opt-list="['离线', '在线']">
+              </my-select>
+            </div>
+          </div>
+        </div>
+        <div class="row text-center">
+          <my-filter-button get-search="deviceVm.getSearch(selectList, getList)"
+                            clear-session="deviceVm.clearSession()"
+                            select-list="deviceVm.selectList"
+                            get-list="deviceVm.getDevice">
+          </my-filter-button>
+        </div>
+      </div>
+
+      <div class="g-table-content m-t-md p-h-md">
+
+        <table class="table table-striped wk-table">
+          <thead>
+          <th>设备SN</th>
+          <th>设备类型</th>
+          <th>单元信息</th>
+          <th>门口编号</th>
+          <th>版本信息</th>
+          <th>锁类型</th>
+          <th>安装时间</th>
+          <th>锁状态</th>
+          <th>设备状态</th>
+          <th>用户/人</th>
+          <th>操作</th>
+          </thead>
+          <tr ng-repeat="item in deviceVm.deviceList">
+            <td>{{item.sn || '-'}}</td>
+            <td>{{item.type || '-'}}</td>
+            <td>{{item.blockName || '-'}}</td>
+            <td>{{item.location || '-'}}</td>
+            <td>{{item.apkVersion || '-'}}</td>
+            <td>{{item.lockType_cn || '-'}}</td>
+            <td>{{item.gmtCreated | date: 'yyyy-MM-dd' || '-'}}</td>
+            <td>
+              <span class="state-circle" ng-class="{'circle-red': item.lockStatus == '0', 'circle-green': item.lockStatus == '1'}"></span>
+              {{item.lockStatus_cn || '-'}}
+            </td>
+            <td>
+              <span class="state-circle" ng-class="{'circle-red': item.status == '0', 'circle-green': item.status == '1'}"></span>
+              {{item.status_cn || '-'}}
+            </td>
+            <td>{{item.amount}}</td>
+            <td>
+              <a class="m-r-sm" href="javascript:;" ng-click="deviceVm.openModal('modal-device-detail', 'detailDeviceCtl as detailVm', item)">详情</a>
+              <a class="m-r-sm"
+                 href="javascript:;"
+                 ng-click="deviceVm.closeDoor(item.id, item.lockStatus)">
+                手动<span ng-if="item.lockStatus == 0">开</span><span ng-if="item.lockStatus != 0">关</span>门
+              </a>
+              <!--<a href="javascript:;" ng-click="deviceVm.openModal('modal-device-timer', 'timerDeviceCtl as timerVm')">定时开门</a>-->
+            </td>
+          </tr>
+        </table>
+
+        <!--<div class="no-data flex-center flex-column">-->
+        <!--暂无数据-->
+        <!--</div>-->
+
+      </div>
+      <div class="m-t-lg text-center"
+           ng-if="!deviceVm.deviceList.length">
+        暂无数据
+      </div>
+      <my-pagination
+        ng-if="deviceVm.deviceList.length"
+        pages="deviceVm.pages"
+        page-active="page.active"
+        is-first-page="deviceVm.isFirstPage"
+        is-last-page="deviceVm.isLastPage"
+        pages-num="deviceVm.pagesNum"
+        pages-total="deviceVm.pagesTotal"
+        page-skip="pageSkip"
+        select-page="deviceVm.selectPage(pageTag, pageNo)">
+      </my-pagination>
+
+      <div class="clearfix"></div>
+
+    </div>
+  </div>
+</div>

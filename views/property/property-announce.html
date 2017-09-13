@@ -1,0 +1,118 @@
+<div class="g-table-banner p-v-md p-h-md b-b">
+  <div class="tb-flex">
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">发布标题:</label>
+      <input type="text"
+             class="form-control w-xl pull-left m-r-md"
+             ng-model="announceVm.selectList.title">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">发布时间:</label>
+      <input type="text"
+             ng-model="announceVm.selectList.effectiveStartTime"
+             class="form-control w-sm pull-left m-r-xs bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-min-date="02/10/86"
+             data-max-date="{{announceVm.selectList.effectiveEndTime}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+      <label class="pull-left datepicker-split">—</label>
+      <input type="text"
+             ng-model="announceVm.selectList.effectiveEndTime"
+             class="form-control w-sm pull-left m-r-lg bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-min-date="{{announceVm.selectList.effectiveStartTime}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+    </div>
+
+    <div class="item m-b-md">
+      <label class="w-label-control">推送状态: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <select ui-select2
+                ng-model="announceVm.selectList.status"
+                data-placeholder="请选择公告状态"
+                name="status">
+          <option value=""></option>
+          <option ng-value="1">发布</option>
+          <option ng-value="2">已过期</option>
+          <option ng-value="3">未生效</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row text-center">
+    <my-filter-button get-search="announceVm.getSearch(selectList, getList)"
+                      clear-session="announceVm.clearSession()"
+                      select-list="announceVm.selectList"
+                      get-list="announceVm.getAnnounce">
+    </my-filter-button>
+  </div>
+</div>
+
+<div class="g-table-content m-t-md p-h-md">
+
+  <div class="prop-button-group pull-right m-b-sm">
+    <button class="btn btn-sm btn-primary m-r-sm"
+            ng-click="propertyVm.openModal('modal-announce-crud','announceCrudCtl as crudVm')">
+      新建公告
+    </button>
+  </div>
+
+  <table class="table table-striped wk-table" style="table-layout:fixed;">
+    <thead>
+    <th width="15%">标题</th>
+    <th width="24%">内容</th>
+    <th width="10%">发布时间</th>
+    <th width="8%">发布对象</th>
+    <th width="10%">开始时间</th>
+    <th width="10%">结束时间</th>
+    <th width="8%">状态</th>
+    <th width="15%">操作</th>
+    </thead>
+    <tr ng-repeat="item in announceVm.announceList">
+      <td>{{item.title}}</td>
+      <td class="word-break">{{item.content}}</td>
+      <td>{{item.gmtCreated | date: 'yyyy-MM-dd'}}</td>
+      <td>{{item.creator}}</td>
+      <td>{{item.effectiveStartTime | date: 'yyyy-MM-dd'}}</td>
+      <td>{{item.effectiveEndTime | date: 'yyyy-MM-dd'}}</td>
+      <td>{{item.status}}</td>
+      <td>
+        <a href="javascript:;" class="m-r-xs"
+           ng-click="propertyVm.openModal('modal-announce-detail','announceDetailCtl as detailVm', item.id)">详情</a>
+        <a href="javascript:;" class="m-r-xs"
+           ng-click="propertyVm.openModal('modal-announce-crud','announceCrudCtl as crudVm', item.id)">编辑</a>
+        <a href="javascript:;" ng-click="propertyVm.openModal('modal-alarm','announceAlarm as alarmVm', item)">删除</a>
+        <!--ng-click="propertyVm.deleteAnnounce(item.id)"-->
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="m-t-lg text-center"
+     ng-if="!announceVm.announceList.length">
+  暂无数据
+</div>
+<my-pagination
+  ng-if="announceVm.announceList.length"
+  pages="announceVm.pages"
+  page-active="page.active"
+  is-first-page="announceVm.isFirstPage"
+  is-last-page="announceVm.isLastPage"
+  pages-num="announceVm.pagesNum"
+  pages-total="announceVm.pagesTotal"
+  page-skip="pageSkip"
+  select-page="announceVm.selectPage(pageTag, pageNo)">
+</my-pagination>
+
+<div class="clearfix"></div>

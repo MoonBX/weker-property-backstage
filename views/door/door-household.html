@@ -1,0 +1,140 @@
+<div class="g-table-banner p-md b-b">
+  <div class="tb-flex">
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">住户姓名: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="householdVm.selectList.name">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">联系方式: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="householdVm.selectList.mobile">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">住户身份: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <my-select model="householdVm.selectList.userType"
+                   placeholder="请选择住户身份"
+                   opt-list="['户主', '家人', '租客']">
+        </my-select>
+      </div>
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">住户房号: </label>
+      <my-cascade partition-id="householdVm.selectList.partitionId"
+                  block-id="householdVm.selectList.blockId"
+                  unit-id="householdVm.selectList.unitId"
+                  room-id="householdVm.selectList.roomNoId"
+                  get-blocks="householdVm.getBlocks(partitionId)"
+                  get-units="householdVm.getUnits(blockId)"
+                  get-rooms="householdVm.getRooms(unitId)"
+                  partitions="householdVm.block.partitions"
+                  blocks="householdVm.block.blocks"
+                  rooms="householdVm.block.rooms"
+                  units="householdVm.block.units">
+      </my-cascade>
+    </div>
+
+    <div class="item m-b-md">
+      <label class="w-label-control">住户状态: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <my-select model="householdVm.selectList.status"
+                   placeholder="请选择住户状态"
+                   opt-list="['正常', '已过期']">
+        </my-select>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row text-center">
+    <my-filter-button get-search="householdVm.getSearch(selectList, getList)"
+                      clear-session="householdVm.clearSession()"
+                      select-list="householdVm.selectList"
+                      get-list="householdVm.getResidentList">
+    </my-filter-button>
+  </div>
+</div>
+
+
+<div class="g-table-content m-t-md p-h-md">
+
+  <div class="prop-button-group pull-right m-b-sm">
+    <button class="btn btn-sm btn-primary m-r-sm"
+            ng-click="householdVm.openAside()">
+      添加住户
+    </button>
+    <!--<button class="btn btn-sm btn-primary m-r-sm"-->
+            <!--ng-click="doorVm.openModal('modal-household-import','importHouseholdCtl as importVm')">-->
+      <!--导入-->
+    <!--</button>-->
+    <!--<button class="btn btn-sm btn-primary m-r-sm">-->
+      <!--导出-->
+    <!--</button>-->
+  </div>
+
+  <table class="table table-striped wk-table">
+    <thead>
+    <th>单元信息</th>
+    <th>住户姓名</th>
+    <th>手机号码</th>
+    <th width="25%">卡号</th>
+    <th>住户身份</th>
+    <th>住户状态</th>
+    <th>操作</th>
+    </thead>
+    <tr ng-repeat="item in householdVm.residentList">
+      <td>{{item.partitionName + '-' + item.blockName + '-' + item.unitName + '-' + item.roomNo}}</td>
+      <td>{{item.name || '-'}}</td>
+      <td>{{item.mobile || '-'}}</td>
+      <td>{{item.cardTypeName || '-'}}</td>
+      <td>{{item.userType_cn || '-'}}</td>
+      <td>
+        <span class="state-circle" ng-class="{'circle-red': item.status == '1', 'circle-green': item.status == '0'}"></span>
+        {{item.status_cn || '-'}}
+      </td>
+      <td>
+        <a class="m-r-sm" href="javascript:;"
+           ng-click="doorVm.openModal('modal-household-detail','detailHouseholdCtl as detailVm', item)">
+          详情
+        </a>
+        <a class="m-r-sm" href="javascript:;"
+           ng-click="doorVm.openModal('modal-household-edit','editHouseholdCtl as editVm', item)">
+          修改
+        </a>
+        <a href="javascript:;"
+           ng-click="doorVm.openModal('modal-alarm','doorAlarm as dAlarmVm', item)">
+          删除
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <!--<div class="no-data flex-center flex-column">-->
+    <!--暂无数据-->
+  <!--</div>-->
+
+</div>
+<div class="m-t-lg text-center"
+     ng-if="!householdVm.residentList.length">
+  暂无数据
+</div>
+<my-pagination
+  ng-if="householdVm.residentList.length"
+  pages="householdVm.pages"
+  page-active="page.active"
+  is-first-page="householdVm.isFirstPage"
+  is-last-page="householdVm.isLastPage"
+  pages-num="householdVm.pagesNum"
+  pages-total="householdVm.pagesTotal"
+  page-skip="pageSkip"
+  select-page="householdVm.selectPage(pageTag, pageNo)">
+</my-pagination>
+
+<div class="clearfix"></div>

@@ -1,0 +1,301 @@
+<div class="position-right">
+  <div class="m-t-lg m-r-md m-l-md m-b-md">
+    <div class="outline-banner card-shadow">
+      <div class="left">
+        <div class="divide"></div>
+        <div class="title">{{homeVm.estateName}}</div>
+        <div class="address">{{homeVm.userName}}</div>
+      </div>
+      <div class="right">
+        <ul class="count-list">
+          <li>
+            <div class="title">单元数</div>
+            <div class="count">{{homeVm.statisticsList.blockNum}}</div>
+          </li>
+          <li>
+            <div class="title">门口机数</div>
+            <div class="count">{{homeVm.statisticsList.deviceNum}}</div>
+          </li>
+          <li>
+            <div class="title">总户数</div>
+            <div class="count">{{homeVm.statisticsList.userNum}}</div>
+          </li>
+          <li>
+            <div class="title">App用户数</div>
+            <div class="count">{{homeVm.statisticsList.appNum}}</div>
+          </li>
+          <li>
+            <div class="title">公卡数量</div>
+            <div class="count">{{homeVm.statisticsList.publicCardNum}}</div>
+          </li>
+          <li>
+            <div class="title">住户卡数</div>
+            <div class="count">{{homeVm.statisticsList.icCardNum}}</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="m-h-md">
+    <div class="func-group">
+      <div class="left">
+        <div class="home-func card-shadow">
+          <div class="home-title">常用功能</div>
+          <ul class="func-list clearfix">
+            <li ng-click="homeVm.addUserSkip('door.household', 'home')">
+              <div class="icon icon-user"></div>
+              <div class="name">添加住户</div>
+            </li>
+            <li ng-click="homeVm.addUserSkip('door.household')">
+              <div class="icon icon-admin"></div>
+              <div class="name">住户管理</div>
+            </li>
+            <li ng-click="homeVm.addUserSkip('door.common', 'home')">
+              <div class="icon icon-card"></div>
+              <div class="name">添加公卡</div>
+            </li>
+            <li ng-click="homeVm.addUserSkip('property.announce', 'home')">
+              <div class="icon icon-adver"></div>
+              <div class="name">发布公告</div></li>
+          </ul>
+        </div>
+        <div class="home-complain card-shadow">
+          <div class="home-title">投诉报修</div>
+          <div class="g-table-content m-t-md m-h-md">
+            <table class="table table-striped wk-table">
+              <thead>
+              <th>姓名</th>
+              <th>时间</th>
+              <th>类型</th>
+              <th>联系方式</th>
+              <th>地址</th>
+              <th>操作</th>
+              </thead>
+              <tr ng-repeat="item in homeVm.complainList">
+                <td>{{item.proposerName}}</td>
+                <td>{{item.gmtCreated | date: 'yyyy-MM-dd HH:mm'}}</td>
+                <td>{{item.type_cn}}</td>
+                <td>{{item.proposerMobile}}</td>
+                <td>{{item.location}}</td>
+                <td>
+                  <a class="m-r-xs" ng-click="homeVm.openModal('modal-alarm','announceAlarm as alarmVm', item)">
+                    处理
+                  </a>
+                  <a ng-click="homeVm.openModal('modal-complain-detail', 'detailComplainCtl as detailVm', item)">
+                    详情
+                  </a>
+                </td>
+              </tr>
+            </table>
+            <div class="no-data flex-center flex-column" ng-if="!homeVm.complainList.length">
+              暂无数据
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="home-device card-shadow clearfix">
+          <div class="home-title">设备信息</div>
+          <ul class="device-list">
+            <li class="clearfix" ng-repeat="item in homeVm.alarmInfoList">
+              <div class="info">
+                <div class="address">{{item.name}}</div>
+                <div class="time">{{item.gmtCreated | date: 'MM-dd HH:mm'}}</div>
+                <div class="state" ng-class="{'warning': item.type == '不在线', 'danger': item.type == '防拆警报'}">{{item.type}}</div>
+              </div>
+              <div class="thumb-box" style="display: flex;align-items: center;">
+                <div class="thumb">
+                  {{item.snapshot}}
+                </div>
+              </div>
+
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <style>
+    .outline-banner{
+      width: 100%;
+      height: 148px;
+      padding-top: 30px;
+      padding-left: 26px;
+      background-color: #fff;
+      background: url("../../images/home_bg.png") no-repeat center center;
+    }
+    .outline-banner .left {
+      float: left;
+      margin-right: 120px;
+    }
+    .outline-banner .left .divide{
+      border-bottom: 2px solid #4E85DE;
+      width: 28px;
+      margin-bottom: 8px;
+    }
+    .outline-banner .left .title{
+      color: #4E85DE;
+      margin-bottom: 26px;
+    }
+    .outline-banner .left .address{
+      color: #1C1C1C;
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .outline-banner .right .count-list{
+      list-style: none;
+      margin-top: 26px;
+    }
+    .outline-banner .right .count-list li{
+      float: left;
+      width: 106px;
+      height: 36px;
+      border-left: 1px solid #646464;
+      padding-left: 20px;
+    }
+    .outline-banner .right .count-list li .title{
+      font-size: 14px;
+      color: #4E85DE;
+      margin-top: -5px;
+    }
+    .outline-banner .right .count-list li .count{
+      font-size: 24px;
+      font-weight: 600;
+    }
+    .func-group{
+      display: flex;
+    }
+    .func-group .left{
+      width: 67%;
+      height: 510px;
+      margin-right: 2%;
+      display: flex;
+      flex-direction: column;
+    }
+    .func-group .left .home-func{
+      width: 100%;
+      height: 176px;
+      background: #fff;
+      margin-bottom: 20px;
+    }
+    .home-title{
+      position: relative;
+      margin: 16px;
+      font-size: 14px;
+      padding-left: 8px;
+      border-left: 2px solid #4E85DE;
+      color: #1C1C1C;
+      line-height: 14px;
+    }
+    .func-group .left .home-func .func-list{
+      list-style: none;
+      padding: 0;
+      margin-top: 20px;
+      margin-left: 68px;
+    }
+    .func-group .left .home-func .func-list li{
+      float: left;
+      margin-right: 60px;
+      cursor: pointer;
+      padding: 10px;
+      transition: 0.2s linear;
+    }
+    .func-group .left .home-func .func-list li:hover{
+      background: #F0F6FF;
+    }
+    .func-group .left .home-func .func-list li .icon{
+      width: 40px;
+      height: 40px;
+      margin: 0 auto 12px;
+    }
+    .func-group .left .home-func .func-list li .icon-user{
+      background: url("../../images/adduser.png") no-repeat center center;
+    }
+    .func-group .left .home-func .func-list li .icon-admin{
+      background: url("../../images/administration_user.png") no-repeat center center;
+    }
+    .func-group .left .home-func .func-list li .icon-card{
+      background: url("../../images/addcard.png") no-repeat center center;
+    }
+    .func-group .left .home-func .func-list li .icon-adver{
+      background: url("../../images/advertise.png") no-repeat center center;
+    }
+    .func-group .left .home-func .func-list li .name{
+      font-size: 15px;
+      text-align: center;
+      color: #4E85DE;
+    }
+    .func-group .left .home-complain{
+      width: 100%;
+      height: 344px;
+      background: #fff;
+    }
+    .func-group .right{
+      width: 31%;
+      min-height: 510px;
+    }
+    .func-group .right .home-device{
+      width: 100%;
+      height: 100%;
+      background: #fff;
+    }
+    .func-group .right .home-device .device-list{
+      list-style: none;
+      margin: 0;
+      margin-top: 4px;
+      padding: 0;
+    }
+    .func-group .right .home-device .device-list li{
+      width: 100%;
+      height: auto;
+      display: flex;
+      justify-content: space-between;
+      background: #F0F6FF;
+      margin-bottom: 8px;
+
+    }
+    .func-group .right .home-device .device-list li .info{
+      margin: 12px;
+      width: 140px;
+      max-width: 140px;
+      font-size: 14px;
+      color: #1C1C1C;
+    }
+    .func-group .right .home-device .device-list li .info .address{
+      margin-bottom: 2px;
+      word-break: break-all;
+      word-wrap: break-word;
+    }
+    .func-group .right .home-device .device-list li .info .time{
+      margin-bottom: 15px;
+    }
+    .func-group .right .home-device .device-list li .thumb{
+      margin: 8px 12px 8px 0;
+      width: 120px;
+      height: 84px;
+      background: url("../../images/mingpian.png") no-repeat center center;
+    }
+    .unline{
+      background: #DE4E4E;
+      display: inline;
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 13px;
+    }
+    .state{
+      display: inline;
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 13px;
+    }
+    .warning{
+      background: #F4B33E;
+    }
+    .danger{
+      background: #DE4E4E;
+    }
+    .card-shadow{
+      box-shadow: 0 0 4px 0 rgba(155,185,235,0.30);
+    }
+  </style>
+</div>

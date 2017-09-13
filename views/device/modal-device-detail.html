@@ -1,0 +1,38 @@
+<div class="content-head">
+  详情
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="detailVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="timerDeviceForm" novalidate>
+  <div class="main-info">
+    <div class="row m-b-sm">
+      <span class="title">{{detailVm.model.blockName}}</span>
+      <span class="state badge bg-success">{{detailVm.model.status_cn}}</span>
+    </div>
+  </div>
+  <div class="other-info">
+    <div class="row m-b-sm">
+      <span class="title">设备类型:</span>
+      <span class="value">{{detailVm.model.type}}</span>
+      <span class="title">锁具类型:</span>
+      <span class="value">{{detailVm.model.lockType_cn}}</span>
+    </div>
+    <div class="row m-b-sm">
+      <span class="title">安装时间:</span>
+      <span class="value">{{detailVm.model.gmtCreated | date: 'yyyy-MM-dd hh:mm'}}</span>
+      <span class="title">用户人数:</span>
+      <span class="value">{{detailVm.model.amount}}</span>
+    </div>
+    <div class="row m-b-sm">
+      <span class="title">设备SN:</span>
+      <span class="value">{{detailVm.model.sn}}</span>
+    </div>
+    <div class="row m-b-sm">
+      <span class="title">版本信息:</span>
+      <span class="value">{{detailVm.model.apkVersion}}</span>
+    </div>
+  </div>
+</form>

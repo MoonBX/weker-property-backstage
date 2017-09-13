@@ -1,0 +1,68 @@
+<div class="content-head">
+  定时开门
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="timerVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="timerDeviceForm" novalidate>
+  <div class="main-info">
+    <div class="row m-b-sm">
+      <span class="title">南区-1幢-2单元-1F</span>
+      <span class="address">15757118202</span>
+    </div>
+  </div>
+  <div class="other-info">
+    <div class="row m-b-sm">
+      <label class="w-label-control" style="width: 65px;">有效时间:</label>
+      <div class="pull-left m-r-lg">
+        <input type="text"
+               ng-model="timerVm.selectList.startTime"
+               class="form-control w-sm pull-left m-r-xs bg-date"
+               data-date-format="yyyy-MM-dd"
+               data-date-type="number"
+               data-min-date="02/10/86"
+               data-max-date="today"
+               data-autoclose="1"
+               bs-datepicker
+               placeholder=""
+        />
+        <label class="pull-left datepicker-split">—</label>
+        <input type="text"
+               ng-model="timerVm.selectList.endTime"
+               class="form-control w-sm pull-left bg-date"
+               data-date-format="yyyy-MM-dd"
+               data-date-type="number"
+               data-max-date="today"
+               data-min-date="{{timerVm.selectList.startTime}}"
+               data-autoclose="1"
+               bs-datepicker
+               placeholder=""
+        />
+        <span class="m-l-xs" style="line-height: 30px;">*每年重复</span>
+      </div>
+    </div>
+
+
+    <div class="row m-t-sm">
+      <label class="m-r-sm text-right" style="width: 65px">关闭/开启:</label>
+      <span class="m-r-lg" style="position: relative;top: 5px;">
+        <label class="ui-switch">
+          <input type="checkbox" checked>
+          <i></i>
+        </label>
+      </span>
+    </div>
+
+    <div class="row text-center m-t-sm">
+      <button class="btn btn-sm btn-primary p-h-lg m-r-md">
+        保&nbsp;存
+      </button>
+      <button class="btn btn-sm btn-primary btn-stroke p-h-lg">
+        取&nbsp;消
+      </button>
+    </div>
+
+  </div>
+</form>

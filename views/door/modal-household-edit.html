@@ -1,0 +1,177 @@
+<div class="content-head">
+  编辑住户
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="editVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="householdEditForm"
+      novalidate>
+  <div class="other-info b-b">
+    <div class="row m-b-md">
+      <label class="w-label-control" style="width: 65px;">住户姓名:</label>
+      <input type="text"
+             ng-model="editVm.postList.name"
+             disabled
+             class="w-sm p-h-xs m-r-md pull-left w-form-control"
+             style="width: 180px;"
+             name="name">
+
+      <label class="w-label-control" style="width: 65px;">住户身份:</label>
+      <div class="w-sm pull-left m-r-lg">
+        <select ui-select2
+                ng-model="editVm.postList.userType"
+                data-placeholder="请选择住户身份"
+                disabled
+                name="userType">
+          <option value=""></option>
+          <option ng-value="0">户主</option>
+          <option ng-value="1">家人</option>
+          <option ng-value="2">租客</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="row m-b-md">
+      <label class="w-label-control" style="width: 65px;">手机号码:</label>
+      <input type="text"
+             ng-model="editVm.postList.mobile"
+             disabled
+             class="w-sm p-h-xs m-r-md pull-left w-form-control"
+             style="width: 230px;"
+             name="mobile">
+    </div>
+
+    <div class="row m-b-md">
+      <label class="w-label-control" style="width: 65px;">身份证号:</label>
+      <input type="text"
+             ng-model="editVm.postList.idCard"
+             disabled
+             class="w-sm p-h-xs m-r-md pull-left w-form-control"
+             style="width: 290px;"
+             name="idCard">
+    </div>
+
+    <div class="row m-b-md">
+      <label class="w-label-control" style="width: 65px;">住户房号:</label>
+      <div class="pull-left w-sm m-r-sm">
+        <select ui-select2
+                ng-model="editVm.postList.partitionId"
+                data-placeholder="请选择住户身份"
+                disabled
+                name="partitionName">
+          <option value=""></option>
+          <option ng-value="editVm.postList.partitionId">
+            {{editVm.postList.partitionName}}
+          </option>
+        </select>
+      </div>
+      <div class="pull-left w-xs m-r-sm">
+        <select ui-select2
+                ng-model="editVm.postList.blockId"
+                data-placeholder="请选择住户身份"
+                disabled
+                name="blockName">
+          <option value=""></option>
+          <option ng-value="editVm.postList.blockId">
+            {{editVm.postList.blockName}}
+          </option>
+        </select>
+      </div>
+      <div class="pull-left w-xs m-r-sm">
+        <select ui-select2
+                ng-model="editVm.postList.unitId"
+                data-placeholder="请选择住户身份"
+                disabled
+                name="unitName">
+          <option value=""></option>
+          <option ng-value="editVm.postList.unitId">
+            {{editVm.postList.unitName}}
+          </option>
+        </select>
+      </div>
+      <div class="pull-left w-xs m-r-sm">
+      <select ui-select2
+              ng-model="editVm.postList.roomNoId"
+              data-placeholder="请选择住户身份"
+              disabled
+              name="roomNo">
+        <option value=""></option>
+        <option ng-value="editVm.postList.roomNoId">
+          {{editVm.postList.roomNo}}
+        </option>
+      </select></div>
+
+    </div>
+
+    <div class="row m-b-md" ng-if="editVm.isEntranceExist">
+      <label class="w-label-control" style="width: 65px;">有效时间:</label>
+      <div class="pull-left m-r-lg" style="line-height: 27px">
+        <label class="ui-checks" ng-if="editVm.userEffectStatus == 0 || editVm.userEffectStatus == 1">
+          <input type="radio" name="a"
+                 ng-model="editVm.postList.effectiveType"
+                 ng-value="0"
+                 ng-click="editVm.radio_change()"
+                 ng-checked="editVm.userType_make_me">
+          <i></i>
+          永久
+        </label>
+        <label class="ui-checks m-l-xs" ng-if="editVm.userEffectStatus == 2 || editVm.userEffectStatus == 1">
+          <input type="radio" name="a"
+                 ng-value="1"
+                 ng-model="editVm.postList.effectiveType"
+                 ng-click="editVm.radio_change()"
+                 ng-checked="!editVm.userType_make_me">
+          <i></i>
+          手动配置
+        </label>
+      </div>
+      <div class="pull-left" ng-if="(editVm.userEffectStatus == 2 || editVm.userEffectStatus == 1)&&!editVm.userType_make_me">
+        <input type="text"
+               ng-model="editVm.postList.effectiveStartTime"
+               class="form-control w-sm pull-left m-r-xs bg-date"
+               data-date-format="yyyy-MM-dd"
+               data-date-type="number"
+               data-min-date="today"
+               data-autoclose="1"
+               bs-datepicker
+               placeholder="请选择起始时间"
+        />
+        <label class="pull-left datepicker-split">—</label>
+        <input type="text"
+               ng-model="editVm.postList.effectiveEndTime"
+               class="form-control w-sm pull-left m-r-lg bg-date"
+               data-date-format="yyyy-MM-dd"
+               data-date-type="number"
+               data-min-date="{{editVm.postList.effectiveStartTime}}"
+               data-autoclose="1"
+               bs-datepicker
+               placeholder="请选择结束时间"
+        />
+      </div>
+    </div>
+  </div>
+  <input type="text" id="CardTypeName" style="display: none" ng-value="editVm.postList.cardTypeName">
+  <iframe name="myFrame"
+          src="./views/door/ocx/ocx-edit.html"
+          width="100%" height="300px"
+          frameborder="no"
+          border="0">
+  </iframe>
+  <div class="row m-b-md text-center">
+    <button class="btn btn-sm btn-primary p-h-lg m-r-sm"
+            ng-click="editVm.editResident(editVm.postList)">
+      保&nbsp;存
+    </button>
+    <button class="btn btn-sm btn-primary btn-stroke p-h-lg"
+            ng-click="editVm.cancel()">
+      取&nbsp;消
+    </button>
+  </div>
+</form>
+<style>
+  .modal-content {
+    width: 650px;
+  }
+</style>

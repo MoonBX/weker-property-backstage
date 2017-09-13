@@ -1,0 +1,77 @@
+<div class="g-table-banner p-md b-b">
+  <div class="tb-flex">
+    <div class="item m-b-md">
+      <label class="w-label-control">时间范围: </label>
+      <input type="text"
+             ng-model="removeVm.selectList.startTime"
+             class="form-control w-sm pull-left m-r-xs bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-max-date="{{removeVm.model.endTime || '2050-12-31'}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+      <label class="pull-left datepicker-split">—</label>
+      <input type="text"
+             ng-model="removeVm.selectList.endTime"
+             class="form-control w-sm pull-left m-r-lg bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-min-date="{{removeVm.selectList.startTime}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <my-filter-button get-search="removeVm.getSearch(selectList, getList)"
+                      clear-session="removeVm.clearSession()"
+                      select-list="removeVm.selectList"
+                      get-list="removeVm.getRemoveList">
+    </my-filter-button>
+  </div>
+</div>
+
+
+<div class="g-table-content m-t-md p-h-md">
+  <table class="table table-striped wk-table">
+    <thead>
+    <th>单元信息</th>
+    <th>门口编号</th>
+    <th>设备类型</th>
+    <th>呼叫时间</th>
+    <th>缩略图</th>
+    </thead>
+    <tr ng-repeat="item in removeVm.removeList">
+      <td>{{item.name}}</td>
+      <td>{{item.location}}</td>
+      <td>{{item.type}}</td>
+      <td>{{item.gmtCreated | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+      <td>
+        <div>
+          <img ng-src="{{item.snapshot}}" alt="..." style="width: 88px;">
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="m-t-lg text-center"
+     ng-if="!removeVm.removeList.length">
+  暂无数据
+</div>
+<my-pagination
+  ng-if="removeVm.removeList.length"
+  pages="removeVm.pages"
+  page-active="page.active"
+  is-first-page="removeVm.isFirstPage"
+  is-last-page="removeVm.isLastPage"
+  pages-num="removeVm.pagesNum"
+  pages-total="removeVm.pagesTotal"
+  page-skip="pageSkip"
+  select-page="removeVm.selectPage(pageTag, pageNo)">
+</my-pagination>
+
+<div class="clearfix"></div>

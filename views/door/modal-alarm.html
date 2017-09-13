@@ -1,0 +1,43 @@
+<form class="w-content-main h-detail-form clearfix"
+      name="deviceDetailForm" style="width: 350px"
+      novalidate>
+  <div class="alert-box">
+    <div class="row m-b-sm">
+      <img src="../../images/warning.png" alt="..." width="45px" height="45px">
+    </div>
+
+    <div class="row m-b-md">
+      <span class="text">{{dAlarmVm.alert}}</span>
+    </div>
+
+    <div class="row m-b-sm">
+      <button class="btn btn-primary btn-sm m-r-md p-v-xs p-h-md"
+              ng-click="dAlarmVm.deal(dAlarmVm.model.id)">
+        确定
+      </button>
+      <button class="btn btn-primary btn-sm btn-stroke p-v-xs p-h-md"
+              ng-click="dAlarmVm.cancel()">
+        取消
+      </button>
+    </div>
+  </div>
+</form>
+<style>
+  .modal.fade.in{
+    display: flex !important;
+    align-items: center;
+    /*justify-content: center;*/
+  }
+  .modal-dialog{
+    width: 350px
+  }
+  .modal-content{
+    width: 350px
+  }
+  .alert-box .row{
+    text-align: center;
+  }
+  .alert-box .text{
+    font-size: 16px;
+  }
+</style>

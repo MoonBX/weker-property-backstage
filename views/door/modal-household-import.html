@@ -1,0 +1,77 @@
+<div class="content-head">
+  导入用户
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="importVm.cancel()">
+  </i>
+</div>
+<div class="content-main customer-modal p-md">
+  <div class="form-group row">
+    <label class="control-label pull-left m-r-md" style="line-height: 28px;">公告模板: </label>
+    <a href="javascript:;" class="a-upload">
+      <input type="file"
+             nv-file-select=""
+             uploader="uploader"
+             multiple/>
+      选择文件
+    </a>
+    <a href="data/resident_template.xls" style="position: relative;font-size: 12px;top: -3px;">
+      下载模板
+    </a>
+  </div>
+  <div class="row m-b-md">
+    <table class="table bg-white-only b-a">
+      <thead>
+      <tr>
+        <th width="50%">文件名</th>
+        <th>进度</th>
+        <th>操作</th>
+        <th>状态</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr ng-repeat="item in uploader.queue">
+        <td><strong>{{ item.file.name }}</strong></td>
+        <td style="vertical-align: middle;">
+          <div class="progress progress-sm m-v-sm">
+            <div class="progress-bar bg-info"
+                 role="progressbar"
+                 ng-style="{ 'width': item.progress + '%' }">
+            </div>
+          </div>
+        </td>
+        <td nowrap style="vertical-align: middle;">
+          <button type="button"
+                  class="btn btn-default btn-xs"
+                  ng-click="item.upload()"
+                  ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+            上传
+          </button>
+        </td>
+        <td style="vertical-align: middle;">
+                  <span ng-show="item.isSuccess">
+                    <i class="glyphicon glyphicon-ok" ng-class="{'text-success': 'item.isSuccess'}"></i>
+                  </span>
+          <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+          <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="form-group row">
+    <label class="control-label pull-left m-r-md" style="line-height: 28px; color:#e65d5b;">温馨提示: </label>
+    <textarea class="pull-left" cols="60" rows="5" style="border: none;overflow:hidden">
+1. 一次导入的数据最大不超过2000条;
+2. 导入2000条数据大约需要2分钟左右时间, 期间请耐心等待, 请勿刷新或关闭浏览器;
+3. 若在导入未成功相应时刷新浏览器或关闭浏览器后, 后台可能还在处理数据, 请勿立即重新导入;
+    </textarea>
+  </div>
+
+  <div class="row text-center m-b-md">
+    <button class="btn btn-sm btn-primary p-h-lg"
+            ng-click="importVm.cancel()">
+      保&nbsp;存
+    </button>
+  </div>
+</div>

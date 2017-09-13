@@ -1,0 +1,187 @@
+<div class="content-head" style="width: 700px;">
+  添加公卡
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="crudVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main create-form clearfix"
+      name="createCommonForm" style="width: 700px; background: #F9FAFD;"
+      novalidate>
+  <div style="width: 67%;float: left; background: #fff; border-right:1px solid #d8d8d8" class="p-md">
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!createCommonForm.userName.$valid&& (createCommonForm.userName.$dirty || createCommonForm.submitted)]">
+      <label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">人员姓名:</label>
+      <div class="pull-left m-r-lg" style="width: 140px">
+        <input type="text"
+               class="w-sm p-h-xs m-r-xs w-form-control"
+               ng-model="crudVm.model.userName"
+               ng-maxlength="8"
+               name="userName"
+               required>
+      </div>
+      <div class="form-error-box"
+           ng-if="createCommonForm.userName.$dirty||createCommonForm.submitted">
+       <span class="form-error" ng-show="createCommonForm.userName.$error.required">
+          人员姓名不能为空
+        </span>
+        <span class="form-error" ng-show="createCommonForm.userName.$error.maxlength">
+          人员姓名不能超过8个字符
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!createCommonForm.userStatus.$valid&& (createCommonForm.userStatus.$dirty || createCommonForm.submitted)]">
+      <label class="w-label-control" style="width: 60px;">住户身份:</label>
+      <div class="w-sm pull-left m-r-lg">
+        <select ui-select2 name="userStatus"
+                ng-model="crudVm.model.userStatus"
+                required
+                data-placeholder="请选择人员身份">
+          <option value=""></option>
+          <option ng-value="0">物业人员</option>
+          <option ng-value="1">外部人员</option>
+        </select>
+      </div>
+      <div class="form-error-box"
+           ng-if="createCommonForm.userStatus.$dirty||createCommonForm.submitted">
+       <span class="form-error" ng-show="createCommonForm.userStatus.$error.required">
+          人员身份不能为空
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!createCommonForm.mobile.$valid&& (createCommonForm.mobile.$dirty || createCommonForm.submitted)]">
+      <label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">
+        手机号码:
+      </label>
+      <div class="pull-left m-r-lg" style="width: 140px">
+        <input type="text"
+               class="w-md p-h-xs m-r-xs w-form-control"
+               ng-model="crudVm.model.mobile"
+               name="mobile"
+               required>
+      </div>
+      <div class="form-error-box"
+           ng-if="createCommonForm.mobile.$dirty||createCommonForm.submitted">
+       <span class="form-error" ng-show="createCommonForm.mobile.$error.required">
+          手机号码不能为空
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative m-b-md"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!crudVm.count && createCommonForm.submitted]">
+      <label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">开启位置:</label>
+      <div class="pull-left m-r-lg">
+        <input type="text"
+               class="w-md p-h-xs m-r-xs w-form-control"
+               placeholder="请在右侧选择"
+               disabled
+        >
+      </div>
+      <div class="form-error-box"
+           ng-if="createCommonForm.submitted">
+        <span class="form-error" ng-show="!crudVm.count">
+          请选择开启位置
+        </span>
+      </div>
+    </div>
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!createCommonForm.vaildType.$valid&& (createCommonForm.vaildType.$dirty || createCommonForm.submitted)]">
+      <label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">有效时间:</label>
+      <div class="w-sm pull-left m-r-lg">
+        <select ui-select2 name="vaildType"
+                ng-model="crudVm.model.vaildType"
+                required
+                data-placeholder="请选择有效期限">
+          <option value=""></option>
+          <option ng-value="0">月卡</option>
+          <option ng-value="1">季卡</option>
+          <option ng-value="2">年卡</option>
+        </select>
+      </div>
+      <div class="form-error-box"
+           ng-if="createCommonForm.vaildType.$dirty||createCommonForm.submitted">
+       <span class="form-error" ng-show="createCommonForm.vaildType.$error.required">
+          有效时间不能为空
+        </span>
+      </div>
+    </div>
+
+    <!--<div class="row pos-relative"-->
+         <!--ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!createCommonForm.cardType.$valid&& (createCommonForm.cardType.$dirty || createCommonForm.submitted)]"-->
+         <!--style="position: relative;">-->
+      <!--<label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">卡类型:</label>-->
+      <!--<div class="w-sm pull-left m-r-lg">-->
+        <!--<select ui-select2 name="cardType"-->
+                <!--ng-model="crudVm.model.cardType"-->
+                <!--required-->
+                <!--data-placeholder="请选择卡类型">-->
+          <!--<option value=""></option>-->
+          <!--<option ng-value="1">IC</option>-->
+          <!--<option ng-value="2">ID</option>-->
+        <!--</select>-->
+      <!--</div>-->
+      <!--<div class="form-error-box"-->
+           <!--ng-if="createCommonForm.cardType.$dirty||createCommonForm.submitted">-->
+       <!--<span class="form-error" ng-show="createCommonForm.cardType.$error.required">-->
+          <!--卡类型不能为空-->
+        <!--</span>-->
+      <!--</div>-->
+    <!--</div>-->
+
+    <div class="row pos-relative"
+         ng-class="{true: 'm-b-lg', false: 'm-b-md'}[!createCommonForm.cardNo.$valid&& (createCommonForm.cardNo.$dirty || createCommonForm.submitted)]">
+      <label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">卡号:</label>
+      <div class="pull-left m-r-lg" style="width: 300px;height: 35px;">
+        <iframe name="myFrame"
+                src="./views/door/ocx/ocx-common.html"
+                width="100%" height="35px"
+                scrolling="no"
+                frameborder="no"
+                border="0">
+        </iframe>
+      </div>
+      <div class="form-error-box"
+           ng-if="createCommonForm.submitted">
+       <span class="form-error" ng-show="createCommonForm.noCardNo">
+          卡号不能为空
+        </span>
+      </div>
+    </div>
+
+    <div class="row m-b-md m-t-md text-center">
+      <button class="btn btn-sm btn-primary p-h-lg"
+              ng-click="crudVm.createCommon(crudVm.model)">
+        保&nbsp;存
+      </button>
+    </div>
+  </div>
+  <div style="width: 33%; float:left;" class="p-md">
+    <div ivh-treeview="crudVm.stuff"
+         ivh-treeview-on-cb-change="crudVm.awesomeCallback(ivhNode, ivhIsExpanded, ivhTree)"></div>
+    <style>
+      span.indented.tree-label {
+        margin-left: 10px;
+      }
+
+      span.ivh-treeview-checkbox-wrapper {
+        position: relative;
+        top: -1px;
+      }
+      .form-error-box{
+        position: absolute;
+        bottom: -20px;
+        left: 72px;
+        font-size: 12px;
+      }
+      .pos-relative{
+        position: relative;
+      }
+    </style>
+  </div>
+</form>

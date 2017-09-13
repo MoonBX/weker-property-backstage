@@ -1,0 +1,135 @@
+<div class="g-table-banner p-md b-b">
+  <div class="tb-flex">
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">报修人: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="repairVm.selectList.proposerName">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">联系方式: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="repairVm.selectList.proposerMobile">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">报修时间: </label>
+      <input type="text"
+             ng-model="repairVm.selectList.startTime"
+             class="form-control w-sm pull-left m-r-xs bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-min-date="02/10/86"
+             data-max-date="today"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+      <label class="pull-left datepicker-split">—</label>
+      <input type="text"
+             ng-model="repairVm.selectList.endTime"
+             class="form-control w-sm pull-left m-r-lg bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-max-date="today"
+             data-min-date="{{repairVm.selectList.startTime}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+    </div>
+
+    <div class="item m-b-md">
+      <label class="w-label-control">处理状态: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <select ui-select2
+                ng-model="repairVm.selectList.status"
+                data-placeholder="请选择处理状态"
+                name="status">
+          <option value=""></option>
+          <option ng-value="0">未处理</option>
+          <option ng-value="1">已处理</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row text-center">
+    <my-filter-button get-search="repairVm.getSearch(selectList, getList)"
+                      clear-session="repairVm.clearSession()"
+                      select-list="repairVm.selectList"
+                      get-list="repairVm.getRepairList">
+    </my-filter-button>
+  </div>
+</div>
+
+
+<div class="g-table-content m-t-md p-h-md">
+
+  <div class="prop-button-group pull-right m-b-sm">
+    <button class="btn btn-sm btn-primary m-r-sm"
+            ng-click="propertyVm.openModal('modal-paylist','payRepairCtl as payVm')">
+      收费标准
+    </button>
+  </div>
+
+  <table class="table table-striped wk-table">
+    <thead>
+    <th>报修人</th>
+    <th>联系方式</th>
+    <th>地址</th>
+    <th>报修时间</th>
+    <th>处理时间</th>
+    <th>处理状态</th>
+    <th>操作</th>
+    </thead>
+    <tr ng-repeat="item in repairVm.repairList">
+      <td>{{item.proposerName}}</td>
+      <td>{{item.proposerMobile}}</td>
+      <td>{{item.location}}</td>
+      <td>{{item.gmtCreated | date: 'yyyy-MM-dd'}}</td>
+      <td>{{item.processTime | date: 'yyyy-MM-dd HH:mm'}}</td>
+      <td>
+        <span class="state-circle" ng-class="{'circle-red': item.status == '未处理', 'circle-green': item.status == '已处理', 'circle-orange': item.status == '处理中'}"></span>
+        {{item.status}}
+      </td>
+      <td>
+        <a ng-if="item.status == '未处理'" class="m-r-sm" ng-click="propertyVm.openModal('modal-alarm','announceAlarm as alarmVm', item)">
+          处理
+        </a>
+        <span ng-if="item.status == '已处理' || item.status == '处理中'" class="m-r-sm a-disabled" href="javascript:;">
+          处理
+        </span>
+        <a ng-click="propertyVm.openModal('modal-repair-detail', 'detailRepairCtl as detailVm', item)">
+          详情
+        </a>
+      </td>
+    </tr>
+  </table>
+
+  <!--<div class="no-data flex-center flex-column">-->
+    <!--暂无数据-->
+  <!--</div>-->
+
+</div>
+<div class="m-t-lg text-center"
+     ng-if="!repairVm.repairList.length">
+  暂无数据
+</div>
+<my-pagination
+  ng-if="repairVm.repairList.length"
+  pages="repairVm.pages"
+  page-active="page.active"
+  is-first-page="repairVm.isFirstPage"
+  is-last-page="repairVm.isLastPage"
+  pages-num="repairVm.pagesNum"
+  pages-total="repairVm.pagesTotal"
+  page-skip="pageSkip"
+  select-page="repairVm.selectPage(pageTag, pageNo)">
+</my-pagination>
+
+<div class="clearfix"></div>

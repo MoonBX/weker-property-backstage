@@ -1,0 +1,39 @@
+<div class="content-head">
+  详情
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="detailVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="timerDeviceForm" novalidate>
+  <div class="main-info">
+    <div class="row m-b-sm">
+      <span class="title">{{detailVm.model.name}}</span>
+      <span class="phone">{{detailVm.model.mobile}}</span>
+      <span class="state badge bg-success">正常</span>
+    </div>
+    <div class="row m-b-sm">
+      <span class="address">{{detailVm.model.partitionName + '-' + detailVm.model.blockName + '-' + detailVm.model.unitName + '-' + detailVm.model.roomNo}}</span>
+    </div>
+  </div>
+  <div class="other-info">
+    <div class="row m-b-sm">
+      <span class="title">住户身份:</span>
+      <span class="value">{{detailVm.model.userType_cn}}</span>
+    </div>
+    <div class="row m-b-sm">
+      <span class="title">身份证号:</span>
+      <span class="value">{{detailVm.model.idCard}}</span>
+      <span class="title">有效期限:</span>
+      <span class="value" ng-if="detailVm.model.effectiveType == 0 || detailVm.model.effectiveStartTime==0">永久</span>
+      <span class="value" ng-if="detailVm.model.effectiveType != 0 && detailVm.model.effectiveStartTime!=0">{{detailVm.model.effectiveStartTime | date: 'yyyy-MM-dd'}}至{{ detailVm.model.effectiveEndTime | date: 'yyyy-MM-dd'}}</span>
+    </div>
+    <div class="row m-b-sm" ng-repeat="item in detailVm.model.cardTypeNameArr">
+      <div class="pull-left" ng-repeat="item_c in item">
+        <span class="title">卡号:</span>
+        <span class="value">{{item_c}}</span>
+      </div>
+    </div>
+  </div>
+</form>

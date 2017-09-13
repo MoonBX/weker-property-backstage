@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
+  <title>Weker物业管理平台</title>
+  <link rel="shortcut icon" href="/images/logo3.png"/>
+  <link rel="stylesheet" href="css/weker-app.css">
+  <link rel="stylesheet" href="css/common.css">
+  <link rel="stylesheet" href="css/ivh-treeview.min.css">
+  <link rel="stylesheet" href="ng/lib/angular-aside.min.css">
+</head>
+<body ng-controller="mainCtl as mainVm">
+<div ng-if="mainVm.isLogin" ng-cloak>
+  <header id="header"
+          ng-include=" 'banner.html' "
+          class="app-header box-shadow navbar bg-banner"
+          role="menu"
+  ></header>
+  <aside id="aside"
+         class="app-aside hidden-xs bg-dark lt"
+         ng-include="'aside.html'"
+         ng-class="{'show animated fadeInLeft' : mainVm.asideCollapse, 'app-aside-sm': mainVm.asideSmall}"
+  ></aside>
+  <div class="app app-header-fixed fad"
+       ui-view
+  ></div>
+  <footer id="footer"
+          class="app-footer"
+          role="footer"
+          ng-include="'footer.html'"
+  ></footer>
+</div>
+<div ng-if="!mainVm.isLogin" style="height: 100%" ng-cloak>
+  <div ui-view style="height: 100%;"></div>
+</div>
+<script src="ng/lib/jqLib.js"></script>
+<script src="ng/lib/ngLib.js"></script>
+<script src="ng/lib/ngBootstrap.js"></script>
+<script src="ng/lib/ngStrap.js"></script>
+<script src="ng/lib/ivh-treeview.min.js"></script>
+<script src="ng/lib/angular-aside.min.js"></script>
+<!--<script src="ng/directive/angular-underscore.js"></script>-->
+<!--<script src="ng/lib/allCSD.js"></script>-->
+<script src="ng/app.js"></script>
+<script src="ng/directive/myPagination.js"></script>
+<script src="ng/directive/myCascade.js"></script>
+<script src="ng/directive/myFilterButton.js"></script>
+<script src="ng/directive/mySelect.js"></script>
+<script src="ng/route.js"></script>
+<script src="ng/main.js"></script>
+<script src="ng/controller/home.ctl.js"></script>
+<script src="ng/controller/property.ctl.js"></script>
+<script src="ng/controller/device.ctl.js"></script>
+<script src="ng/controller/door.ctl.js"></script>
+<script src="ng/controller/log.ctl.js"></script>
+<script src="ng/service/main.srv.js"></script>
+<script src="ng/service/home.srv.js"></script>
+<script src="ng/service/property.srv.js"></script>
+<script src="ng/service/door.srv.js"></script>
+<script src="ng/service/device.srv.js"></script>
+<script src="ng/service/log.srv.js"></script>
+</body>
+</html>

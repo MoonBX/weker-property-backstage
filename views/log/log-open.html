@@ -1,0 +1,145 @@
+<div class="g-table-banner p-md b-b">
+  <div class="tb-flex">
+    <div class="item m-b-sm">
+      <label class="w-label-control">人员姓名: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="openVm.selectList.name">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">手机号码: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="openVm.selectList.mobile">
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">设备类型: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <my-select model="openVm.selectList.deviceType"
+                   placeholder="请选择设备类型"
+                   opt-list="['围墙机', '单元机']">
+        </my-select>
+      </div>
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">日志类型: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <my-select model="openVm.selectList.type"
+                   placeholder="请选择日志类型"
+                   opt-list="['呼叫', '刷卡', '密码', 'APP']">
+        </my-select>
+      </div>
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">位置信息: </label>
+      <my-cascade-three partition-id="openVm.selectList.partitionId"
+                  block-id="openVm.selectList.blockId"
+                  unit-id="openVm.selectList.unitId"
+                  get-blocks="openVm.getBlocks(partitionId)"
+                  get-units="openVm.getUnits(blockId)"
+                  partitions="openVm.block.partitions"
+                  blocks="openVm.block.blocks"
+                  units="openVm.block.units">
+      </my-cascade-three>
+    </div>
+
+    <div class="item m-b-sm">
+      <label class="w-label-control">时间范围: </label>
+      <input type="text"
+             ng-model="openVm.selectList.st"
+             class="form-control w-sm pull-left m-r-xs bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-max-date="{{openVm.selectList.et||'today'}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+      <label class="pull-left datepicker-split">—</label>
+      <input type="text"
+             ng-model="openVm.selectList.et"
+             class="form-control w-sm pull-left m-r-lg bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-min-date="{{openVm.selectList.st}}"
+             data-max-date="today"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+    </div>
+  </div>
+
+  <div class="row text-center">
+    <my-filter-button get-search="openVm.getSearch(selectList, getList)"
+                      clear-session="openVm.clearSession()"
+                      select-list="openVm.selectList"
+                      get-list="openVm.getOpenList">
+    </my-filter-button>
+  </div>
+</div>
+
+<div class="g-table-content m-t-md p-h-md">
+
+  <table class="table table-striped wk-table">
+    <thead>
+    <th width="10%">单元信息</th>
+    <th width="10%">设备类型</th>
+    <th width="5%">姓名</th>
+    <th width="10%">手机号码</th>
+    <th width="8%">卡类型</th>
+    <th width="10%">卡号</th>
+    <th width="10%">通话时长</th>
+    <th width="10%">开门时间</th>
+    <th width="10%">日志类型</th>
+    <th width="10%">缩略图</th>
+    <th width="7%">操作</th>
+    </thead>
+    <tr ng-repeat="item in openVm.intercomList">
+      <td>{{item.blockName || '-'}}</td>
+      <td>{{item.deviceType || '-'}}</td>
+      <td>{{item.name || '-'}}</td>
+      <td>{{item.mobile || '-'}}</td>
+      <td>{{item.cardType}}</td>
+      <td>{{item.cardNo || '-'}}</td>
+      <td>{{item.duration || '-'}}</td>
+      <td>{{item.unlockTime | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
+      <td>{{item.type || '-'}}</td>
+      <td>
+        <div>
+          <img ng-src="{{item.snapshot}}" alt="..." style="width: 88px;">
+        </div>
+      </td>
+      <td>
+        <a class="m-r-sm" href="javascript:;"
+           ng-click="logVm.openModal('modal-open-detail','detailOpenCtl as detailVm', item)">详情</a>
+      </td>
+    </tr>
+  </table>
+
+  <!--<div class="no-data flex-center flex-column">-->
+  <!--暂无数据-->
+  <!--</div>-->
+
+</div>
+<div class="m-t-lg text-center"
+     ng-if="!openVm.intercomList.length">
+  暂无数据
+</div>
+<my-pagination
+  ng-if="openVm.intercomList.length"
+  pages="openVm.pages"
+  page-active="page.active"
+  is-first-page="openVm.isFirstPage"
+  is-last-page="openVm.isLastPage"
+  pages-num="openVm.pagesNum"
+  pages-total="openVm.pagesTotal"
+  page-skip="pageSkip"
+  select-page="openVm.selectPage(pageTag, pageNo)">
+</my-pagination>
+
+<div class="clearfix"></div>

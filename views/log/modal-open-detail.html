@@ -1,0 +1,44 @@
+<div class="content-head">
+  <span>详情</span>
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="detailVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="logDetailForm"
+      novalidate>
+  <div class="main-info">
+    <div class="row m-b-sm">
+      <span class="title">{{detailVm.model.blockName}}</span>
+    </div>
+  </div>
+  <div class="other-info">
+    <div class="row m-b-xs">
+      <span class="title">设备类型:</span>
+      <span class="value">{{detailVm.model.deviceType}}</span>
+      <span class="title">日志类型:</span>
+      <span class="value">{{detailVm.model.type}}</span>
+    </div>
+    <div class="row m-b-xs">
+      <span class="title">姓名:</span>
+      <span class="value">{{detailVm.model.name}}</span>
+      <span class="title">手机号码:</span>
+      <span class="value">{{detailVm.model.mobile}}</span>
+    </div>
+    <div class="row m-b-xs">
+      <span class="title">通话时长:</span>
+      <span class="value">{{detailVm.model.duration}}</span>
+    </div>
+    <div class="row m-b-xs">
+      <span class="title">开门时间:</span>
+      <span class="value">{{detailVm.model.unlockTime | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+    </div>
+    <div class="row m-b-xs">
+      <span class="title pull-left">缩略图:</span>
+      <div class="value pull-left">
+        <img ng-src="{{detailVm.model.snapshot}}" alt="..." style="width: 300px;">
+      </div>
+    </div>
+  </div>
+</form>

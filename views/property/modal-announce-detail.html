@@ -1,0 +1,43 @@
+<div class="content-head">
+  公告详情
+  <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+     style="cursor: pointer"
+     ng-click="detailVm.cancel()">
+  </i>
+</div>
+<form class="w-content-main h-detail-form clearfix"
+      name="detailAnnounceForm"
+      novalidate>
+  <div class="main-info">
+    <div class="row m-b-sm">
+      <span class="title">{{detailVm.detailList.title}}</span>
+      <span class="state badge bg-success">{{detailVm.detailList.status}}</span>
+    </div>
+    <div class="row m-b-sm">
+      <span>{{detailVm.detailList.effectiveStartTime | date: 'yyyy-MM-dd'}}到{{detailVm.detailList.effectiveEndTime | date: 'yyyy-MM-dd'}}</span>
+    </div>
+    <div class="row m-b-sm word-break">
+      {{detailVm.detailList.content}}
+    </div>
+  </div>
+  <div class="wrap-box m-b-md clearfix" ng-repeat="item in detailVm.detailList.partitions">
+    <div class="left">
+      {{item.name}}
+    </div>
+    <div class="right">
+      <ul class="list">
+        <li>
+          <span class="title">围墙机:</span>
+          <span class="m-r-sm" ng-repeat="item_f in item.fenceLocations">{{item_f.name}}</span>
+        </li>
+        <li ng-repeat="item_b in item.blockDevices">
+          <span class="title">{{item_b.name}}:</span>
+          <span class="m-r-sm" ng-repeat="item_u in item.blockDevices[$index].units">{{item_u.name}}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <style>
+
+  </style>
+</form>

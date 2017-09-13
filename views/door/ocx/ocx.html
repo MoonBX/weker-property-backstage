@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<!-- saved from url=(0014)about:internet-->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>读写器测试(Javascript)</title>
+  <script src="jquery.min.js"></script>
+</head>
+
+<script language="javascript" type="text/javascript">
+//  window.onload = function(){
+    try {
+      var obj = new ActiveXObject("YW60X.yw60xCtrl.1");
+    }
+    catch(e) {
+      alert("请先安装读卡器插件");
+      window.navigate("http://www.youwokeji.com.cn/yw60xocxSetup.exe");
+    }
+
+
+    function OpenReader()
+    {
+      if(document.ReaderTest.YW_USBHIDInitial()<=0)
+      {
+        document.getElementById("CardNo").value = "û�ж�����";
+        return false;
+      }
+      return true;
+    }
+
+    function CloseReader()
+    {
+      return document.ReaderTest.YW_USBHIDFree();
+    }
+
+    function RequestCard()
+    {
+      var i;
+      var CardType;
+      var vCardNo;
+      var LenCardNo;
+
+
+      if(OpenReader()==false)return;
+
+      var cardBox = $('.cards-box');
+      var currentIndex = cardBox.children(".row").length-1;
+      var firstInput = cardBox.children(".row").eq(0).children("input")[0].value;
+
+      var length = cardBox.children(".row").length;
+
+      i = document.ReaderTest.YW_RequestCard(1,82);
+      if(i<0) {
+//        console.log(document.getElementById("CardNo0").value);
+//        document.getElementById("CardNo0").value ="请将卡片放置于读卡器上";
+        alert("请将卡片放置于读卡器上");
+        return;
+      }
+      i = document.ReaderTest.YW_AntiCollide(1);
+      if(i<0) {
+        console.log(document.getElementById("CardNo0").value);
+        document.getElementById("CardNo0").value ="请将卡片放置于读卡器上1";
+        return;
+      }
+
+
+      LenCardNo = document.ReaderTest.OutData1Size;
+      vCardNo    = document.ReaderTest.OutData1;
+
+      for(var k=0;k<length;k++) {
+        if ("IC-" + document.ReaderTest.ConvertCardNo(vCardNo,3).slice(2) == cardBox.children(".row").eq(k).children("input")[0].value) {
+          length = 0;
+          break;
+        }
+      }
+
+      for(var j=0;j<length;j++){
+        if("IC-"+document.ReaderTest.ConvertCardNo(vCardNo,3).slice(2) == cardBox.children(".row").eq(j).children("input")[0].value){
+          break;
+        }
+
+        if(!cardBox.children(".row").eq(j).children("input")[0].value){
+          document.getElementById("CardNo"+j).value = "IC-"+document.ReaderTest.ConvertCardNo(vCardNo,3).slice(2);
+          break;
+        }
+
+        if(j==cardBox.children(".row").length-1){
+          if(!firstInput&&currentIndex==0){
+            document.getElementById("CardNo0").value = "IC-"+document.ReaderTest.ConvertCardNo(vCardNo,3).slice(2);
+          }else if(firstInput&&currentIndex==0){
+            cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="search" class="w-sm p-h-xs m-r-md pull-left w-form-control" name="CardNo1" id="CardNo1"></div>');
+            document.getElementById("CardNo1").value = "IC-"+document.ReaderTest.ConvertCardNo(vCardNo,3).slice(2);
+          }else if(currentIndex>0&&currentIndex<9){
+//            console.log(currentIndex);
+            cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡'+(currentIndex+2) +':</label> <input type="search" class="w-sm p-h-xs m-r-md pull-left w-form-control" name="CardNo'+(currentIndex+1)+'" id="CardNo'+(currentIndex+1)+'"></div>');
+            document.getElementById("CardNo"+(currentIndex+1)).value = "IC-"+document.ReaderTest.ConvertCardNo(vCardNo,3).slice(2);
+          }else{
+            console.log('end');
+          }
+        }
+      }
+
+      i = document.ReaderTest.YW_CardSelect(1,LenCardNo,vCardNo);
+    }
+
+</script>
+
+<body>
+<style>
+  .other-info .title{
+    margin-right: 10px;
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+    color: #999999;
+  }
+  .p-v-md{
+    padding-top: 20px;
+    padding-bottom: 20px
+  }
+  .p-h-sm{
+    padding-right: 10px;
+    padding-left: 10px
+  }
+  .p-sm{
+    padding: 10px;
+  }
+  .pull-left{
+    float: left;
+  }
+  .m-b-sm{
+    margin-bottom: 10px;
+  }
+  .w-label-control{
+    float: left;
+    text-align: right;
+    margin-top: 5px;
+    margin-right: 10px;
+  }
+  .row{
+    width: 100%;
+    display: inline-block;
+  }
+  .w-form-control{
+    color: #555;
+    border: 1px solid #ccc;
+    width: 120px;
+    height: 28px;
+    padding: 0;
+    font-size: 13px;
+    outline: none;
+    padding-left: 6px;
+    -webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+    -o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  }
+  .w-form-control:focus{
+    border-color: #acb2b8;
+    padding-left: 6px;
+  }
+  .m-r-md{
+    margin-right: 20px
+  }
+  .cards-box{
+    background: #F0F6FF;
+    width: 400px;
+    height: 200px;
+    /*display: flex;*/
+    /*-ms-display: flex;*/
+    /*flex-direction: row;*/
+    /*flex-wrap: wrap;*/
+  }
+  .cards-box .row{
+    /*flex-grow: 0;*/
+    float: left;
+    width: 50%;
+  }
+  .clear{
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 30px;
+  }
+  .btn{
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.4285;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .p-h-lg{
+    padding-right: 30px;
+    padding-left: 30px;
+  }
+  .m-b-md{
+    margin-bottom: 20px;
+  }
+  .btn-primary:hover, .btn-primary:focus{
+    color: #ffffff !important;
+    background-color: #4E85DE !important;
+    border-color: #4E85DE !important;
+  }
+  .btn-primary{
+    color: #ffffff !important;
+    background-color: #4E85DE !important;
+    border-color: #4E85DE !important;
+  }
+  .text-center{
+    text-align: center;
+  }
+</style>
+<div class="other-info p-v-md p-h-sm clearfix">
+  <object id="ReaderTest" style="display: none"
+          classid="clsid:167E1838-7388-4A24-86DE-985B91F0FFBF">
+  </object>
+  <div class="pull-left p-sm cards-box" id="cardBox">
+    <div class="row m-b-sm">
+      <label class="w-label-control" style="width:40px;">卡1:</label>
+      <input type="search"
+             name="CardNo0" id="CardNo0"
+             class="w-sm p-h-xs m-r-xs pull-left w-form-control">
+    </div>
+
+  </div>
+  <div class="text-center p-h-sm" style="width: auto; overflow: auto">
+    <button class="btn btn-primary btn-md p-h-lg m-b-md" name="RequestCard1" value="寻卡" onClick="RequestCard()">读取卡号</button>
+    <!--<button onClick="addInput()">增加一条</button>-->
+    <div class="m-b-md"><a href="http://www.youwokeji.com.cn/yw60xocxSetup.exe">下载插件</a></div>
+    <div>提示:当前读卡功能只支持IE浏览器使用</div>
+  </div>
+</div>
+</body>
+
+
+</html>
