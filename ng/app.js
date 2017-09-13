@@ -7,6 +7,7 @@ angular.module('app', [
   'ui.bootstrap',
   'mgcrea.ngStrap.datepicker',
   'mgcrea.ngStrap.dropdown',
+  'ngAside',
   'ngAnimate',
   'angular-loading-bar',
   //'angular-underscore',
