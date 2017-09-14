@@ -7,6 +7,7 @@ angular.module('doorApi', [])
 doorSrv.$inject = ['$q', '$http', 'mainSrv'];
 function doorSrv($q, $http, mainSrv){
   var server = mainSrv.getHttpRoot();
+  var mockServer = "https://easy-mock.com/mock/59b2565be0dc663341a27fd5/weker";
   var doorList = {
     getResident: function(pageNo, limit, obj){
       var defer = $q.defer();
@@ -162,6 +163,24 @@ function doorSrv($q, $http, mainSrv){
       $http({
         method: 'GET',
         url: server + '/device/isExist/'+partitionId+'/'+unitId,
+        headers: {
+          'token': localStorage.wekerToken,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+        .success(function(data){
+          defer.resolve(data);
+        })
+        .error(function(error){
+          defer.reject(error);
+        });
+      return defer.promise;
+    },
+    getIdCardInfo: function(){
+      var defer = $q.defer();
+      $http({
+        method: 'GET',
+        url: mockServer + '/idCardInfo',
         headers: {
           'token': localStorage.wekerToken,
           'Content-Type': 'application/json;charset=UTF-8'

@@ -11,6 +11,7 @@ angular.module('doorMdl', [])
   .controller('importHouseholdCtl', importHouseholdCtl)
   .controller('crudCommonCtl', crudCommonCtl)
   .controller('detailCommonCtl', detailCommonCtl)
+  .controller('AsideCtrl', AsideCtrl)
   .controller('doorAlarm', doorAlarm);
 
 function doorCtl($modal) {
@@ -104,7 +105,9 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
     console.log('open');
     $aside.open({
       templateUrl: 'views/door/aside.demo.tpl.html',
-      backdrop: true,
+      backdrop: 'static',
+      placement: 'right',
+      controller: 'createHouseholdCtl as createVm'
     });
   }
 
@@ -213,6 +216,10 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
       getResidentList(parseInt($location.search().id), vm.selectList);
     }
   });
+}
+
+function AsideCtrl($scope, $modalInstance){
+  console.log('a');
 }
 
 function commonCtl($rootScope, $location, $state, $stateParams, $modal, doorSrv, mainSrv) {
@@ -402,7 +409,7 @@ function detailHouseholdCtl(items, $modalInstance) {
   }
 }
 
-function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, items, toastr) {
+function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, toastr) {
   var vm = this;
   vm.postList = {};
   vm.block = {};
@@ -417,15 +424,8 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
 
   //vm.userType_make_me = false;
 
-  if (items) {
-    console.log(items);
-    vm.title = '编辑住户';
-    vm.postList = items;
-    getPartition();
-  } else {
-    vm.title = '添加住户';
-    getPartition();
-  }
+  vm.title = '添加住户';
+  getPartition();
 
   function transform(obj) {
     var arr = [];
@@ -532,6 +532,25 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
       })
     }
   }
+
+  vm.idCardCheck = false;
+  vm.getCardInfo = getCardInfo;
+  function getCardInfo(cardNo){
+    if(cardNo&&cardNo.length == 18){
+      doorSrv.getIdCardInfo().then(function(res){
+        console.log(res);
+        vm.idCardList = res.data;
+        if(cardNo == vm.idCardList.identityum){
+          vm.idCardCheck = true;
+        }else{
+          toastr.info('匹配身份证失败');
+        }
+      })
+    }else{
+      toastr.info('请输入正确的身份证号码')
+    }
+  }
+
 
   vm.isEntranceExist = false;
   function checkEntranceExist(partitionId){
