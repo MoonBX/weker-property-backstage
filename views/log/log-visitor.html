@@ -1,0 +1,110 @@
+<div class="g-table-banner p-md b-b">
+  <div class="tb-flex">
+    <div class="item m-b-sm">
+      <label class="w-label-control">访客姓名: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="visitorVm.selectList.name">
+    </div>
+    <div class="item m-b-sm">
+      <label class="w-label-control">身份证号码: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="visitorVm.selectList.name">
+    </div>
+    <div class="item m-b-sm">
+      <label class="w-label-control">设备名称: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="visitorVm.selectList.name">
+    </div>
+    <div class="item m-b-sm">
+      <label class="w-label-control">被呼叫对象: </label>
+      <input type="text"
+             class="form-control w-sm pull-left m-r-lg"
+             ng-model="visitorVm.selectList.name">
+    </div>
+    <div class="item m-b-sm">
+      <label class="w-label-control">时间范围: </label>
+      <input type="text"
+             ng-model="visitorVm.selectList.st"
+             class="form-control w-sm pull-left m-r-xs bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-max-date="{{visitorVm.selectList.et||'today'}}"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+      <label class="pull-left datepicker-split">—</label>
+      <input type="text"
+             ng-model="visitorVm.selectList.et"
+             class="form-control w-sm pull-left m-r-lg bg-date"
+             data-date-format="yyyy-MM-dd"
+             data-date-type="number"
+             data-min-date="{{visitorVm.selectList.st}}"
+             data-max-date="today"
+             data-autoclose="1"
+             bs-datepicker
+             placeholder=""
+      />
+    </div>
+  </div>
+  <div class="row text-center">
+    <my-filter-button get-search="visitorVm.getSearch(selectList, getList)"
+                      clear-session="visitorVm.clearSession()"
+                      select-list="visitorVm.selectList"
+                      get-list="visitorVm.getOpenList">
+    </my-filter-button>
+  </div>
+</div>
+
+<div class="g-table-content m-t-md p-h-md">
+
+  <table class="table table-striped wk-table">
+    <thead>
+    <th width="13%">设备名称</th>
+    <th width="13%">被呼叫对象</th>
+    <th width="13%">访客姓名</th>
+    <th width="13%">身份证</th>
+    <th width="12%">住址</th>
+    <th width="12%">呼叫时间</th>
+    <th width="12%">缩略图</th>
+    <th width="12%">操作</th>
+    </thead>
+    <tr ng-repeat="item in openVm.intercomList">
+      <td>{{item.blockName || '-'}}</td>
+      <td>{{item.deviceType || '-'}}</td>
+      <td>{{item.name || '-'}}</td>
+      <td>{{item.mobile || '-'}}</td>
+      <td>{{item.cardType}}</td>
+      <td>{{item.unlockTime | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
+      <td>
+        <div>
+          <img ng-src="{{item.snapshot}}" alt="..." style="width: 88px;">
+        </div>
+      </td>
+      <td>
+        <a class="m-r-sm" href="javascript:;"
+           ng-click="logVm.openModal('modal-open-detail','detailOpenCtl as detailVm', item)">详情</a>
+      </td>
+    </tr>
+  </table>
+</div>
+<div class="m-t-lg text-center"
+     ng-if="!openVm.intercomList.length">
+  暂无数据
+</div>
+<my-pagination
+  ng-if="openVm.intercomList.length"
+  pages="openVm.pages"
+  page-active="page.active"
+  is-first-page="openVm.isFirstPage"
+  is-last-page="openVm.isLastPage"
+  pages-num="openVm.pagesNum"
+  pages-total="openVm.pagesTotal"
+  page-skip="pageSkip"
+  select-page="openVm.selectPage(pageTag, pageNo)">
+</my-pagination>
+
+<div class="clearfix"></div>

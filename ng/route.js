@@ -108,8 +108,10 @@ function config($stateProvider, $urlRouterProvider, $httpProvider){
       controller: "removeCtl",
       controllerAs: "removeVm"
     })
-    .state('log.ocx', {
-      url: "/ocx",
-      templateUrl: "views/log/log-ocx.html"
+    .state('log.visitor', {
+      url: "/visitor?:id",
+      templateUrl: "views/log/log-visitor.html",
+      controller: "visitorCtl",
+      controllerAs: "visitorVm"
     })
 }

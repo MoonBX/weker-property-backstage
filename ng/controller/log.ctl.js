@@ -5,6 +5,7 @@ angular.module('logMdl', [])
   .controller('logCtl', logCtl)
   .controller('openCtl', openCtl)
   .controller('removeCtl', removeCtl)
+  .controller('visitorCtl', visitorCtl)
   .controller('detailOpenCtl', detailOpenCtl);
 
 function logCtl($modal){
@@ -275,6 +276,67 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
 
     })
   }
+}
+
+function visitorCtl($rootScope, $location, $state, logSrv, mainSrv){
+  var vm = this;
+
+  vm.getVisitorList = getVisitorList;
+  vm.selectPage = selectPage;
+  vm.getSearch = getSearch;
+  vm.clearSession = clearSession;
+  vm.selectList = {};
+  vm.visitorList = [];
+  vm.pageNo = parseInt($location.search().id);
+
+  checkFilter();
+  function checkFilter() {
+    if (!sessionStorage.filterList) {
+      getVisitorList(vm.pageNo);
+    } else {
+      var obj = JSON.parse(sessionStorage.filterList);
+      vm.selectList = obj;
+      getVisitorList(vm.pageNo, vm.selectList);
+      $location.search('id', vm.pageNo);
+    }
+  }
+
+  function clearSession() {
+    sessionStorage.removeItem('filterList');
+    vm.selectList = {};
+    getOpenList(1);
+    $location.search('id', 1);
+  }
+
+  function getSearch(obj, cb) {
+    if(obj.et){
+      if(obj.st == obj.et){
+        obj.et = obj.et+24*60*60*1000-1;
+      }
+    }
+    console.log(obj);
+    mainSrv.getSearch(obj, cb);
+    $location.search('id', 1);
+  }
+
+  function selectPage(tag, pageNo) {
+    if (tag == 'next') {
+      $state.go('log.visitor', {id: vm.pageNo + 1});
+    } else if (tag == 'prev') {
+      $state.go('log.visitor', {id: vm.pageNo - 1});
+    } else {
+      $state.go('log.visitor', {id: pageNo});
+    }
+  }
+
+  function getVisitorList(){
+    logSrv.getVisitorList(1, 7).then(function(res){
+      if(res.success){
+        vm.visitorList = res.data.list;
+      }
+    })
+  }
+
 }
 
 function detailOpenCtl(items, $modalInstance){

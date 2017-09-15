@@ -45,6 +45,25 @@ function logSrv($q, $http, mainSrv) {
           defer.reject(error);
         });
       return defer.promise;
+    },
+    getVisitorList: function(pageNo, limit, obj){
+      var defer = $q.defer();
+      $http({
+        method: 'GET',
+        url: server + '/visitor/record/list/' + pageNo + '/' + limit,
+        params: obj,
+        headers: {
+          'token': localStorage.wekerToken,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+        .success(function (data) {
+          defer.resolve(data);
+        })
+        .error(function (error) {
+          defer.reject(error);
+        });
+      return defer.promise;
     }
   }
   return logList;

@@ -32,7 +32,7 @@ function doorSrv($q, $http, mainSrv){
       var defer = $q.defer();
       $http({
         method: 'POST',
-        url: server + '/community/resident/add',
+        url: server + '/community/resident/add/wuhan',
         data: obj,
         headers: {
           'token': localStorage.wekerToken,
@@ -176,11 +176,30 @@ function doorSrv($q, $http, mainSrv){
         });
       return defer.promise;
     },
-    getIdCardInfo: function(){
+    getIdCardInfo: function(identityNum){
       var defer = $q.defer();
       $http({
         method: 'GET',
-        url: mockServer + '/idCardInfo',
+        url: server + '/idCard/info/query/'+ identityNum,
+        headers: {
+          'token': localStorage.wekerToken,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+        .success(function(data){
+          defer.resolve(data);
+        })
+        .error(function(error){
+          defer.reject(error);
+        });
+      return defer.promise;
+    },
+    uploadFaceImage: function(obj){
+      var defer = $q.defer();
+      $http({
+        method: 'POST',
+        url: server + '/face/recognition/facesetAddUser',
+        data: obj,
         headers: {
           'token': localStorage.wekerToken,
           'Content-Type': 'application/json;charset=UTF-8'

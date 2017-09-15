@@ -22,7 +22,7 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
     {title: '日志查询', icon: 'fa-file-text-o', sref: 'log', path: 'log', isActive: false, item:[
       {b_title: '日志查询', itemName:"开门日志", sref:"log.open", pageNo: 1, isActive: false},
       {b_title: '日志查询', itemName:"防拆日志", sref:"log.remove", pageNo: 1, isActive: false},
-      //{b_title: '日志查询', itemName:"ocx", sref:"log.ocx", pageNo: 1, isActive: false},
+      {b_title: '日志查询', itemName:"访客日志", sref:"log.visitor", pageNo: 1, isActive: false},
     ]}
   ];
   var pathNav = [
@@ -35,6 +35,7 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
     {path: '/door/common', b_title: '门禁管理', itemName: '公卡管理'},
     {path: '/log/open', b_title: '日志查询', itemName: '开门日志'},
     {path: '/log/remove', b_title: '日志查询', itemName: '防拆日志'},
+    {path: '/log/visitor', b_title: '日志查询', itemName: '访客日志'},
     {path: '/account/update-password', b_title: '修改密码', itemName: ''}
   ];
   mainVm.currentNav = {title: '首页', b_title: '首页', icon: 'user', sref: 'home', path: 'index', isActive: true};

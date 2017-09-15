@@ -533,21 +533,29 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     }
   }
 
-  vm.idCardCheck = false;
+  vm.idCardCheck = 0;
   vm.getCardInfo = getCardInfo;
   function getCardInfo(cardNo){
     if(cardNo&&cardNo.length == 18){
-      doorSrv.getIdCardInfo().then(function(res){
+      doorSrv.getIdCardInfo(cardNo).then(function(res){
         console.log(res);
-        vm.idCardList = res.data;
-        if(cardNo == vm.idCardList.identityum){
-          vm.idCardCheck = true;
+        if(res.success){
+          vm.idCardList = res.data;
+          //if(cardNo == vm.idCardList.identityNum){
+            vm.idCardCheck = 1;
+          //}else{
+          //  toastr.info('匹配身份证失败');
+          //  vm.idCardCheck = 2;
+          //}
         }else{
           toastr.info('匹配身份证失败');
+          vm.idCardCheck = 2;
         }
+
       })
     }else{
-      toastr.info('请输入正确的身份证号码')
+      toastr.info('请输入正确的身份证号码');
+      vm.idCardCheck = 0;
     }
   }
 
@@ -563,48 +571,55 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     })
   }
 
+  vm.back = back;
+  function back(){
+    vm.householdStep = 1;
+  }
+
+  vm.householdStep = 1;
   function createResident(obj) {
     console.log(obj);
-
-    if ($scope.houseForm.$valid) {
-      var arr = [];
-      var cardBox = myFrame.window.document.getElementById("cardBox");
-      var cardBoxLen = $(cardBox).children('.row').length;
-      for (var i = 0; i < cardBoxLen; i++) {
-        if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
-          arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
-        }
-      }
+    if ($scope.houseForm.$valid&&vm.postList.idCard == vm.idCardList.identityNum) {
       if (obj.effectiveEndTime) {
         if (obj.effectiveStartTime == obj.effectiveEndTime) {
           obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
         }
       }
-      if (vm.userType_make_me) {
-        obj.effectiveType = 0
-      }
-      else {
-        obj.effectiveType = 1
-      }
-      obj.cardTypeNames = arr.join(',');
-      console.log(obj);
+      if (vm.userType_make_me) { obj.effectiveType = 0 }
+      else { obj.effectiveType = 1 }
+      //obj.cardTypeNames = arr.join(',');
+      obj.name = vm.idCardList.customerName;
       doorSrv.createResident(obj).then(function (res) {
         console.log(res);
         if (res.success) {
-          toastr.info("新建住户成功");
-          $timeout(function () {
-            $rootScope.$broadcast('refresh-resident', 'create');
-            cancel();
-          }, 500);
+          var faceObj = {};
+          faceObj.id = vm.idCardList.id;
+          faceObj.mobile = obj.mobile;
+          doorSrv.uploadFaceImage(faceObj).then(function(res){
+            if(res.success){
+              toastr.info("新建住户成功");
+              $rootScope.$broadcast('refresh-resident', 'create');
+              vm.householdStep = 2;
+            }
+          })
         } else {
           toastr.info(res.message);
         }
       })
     } else {
-      console.log($scope.houseForm)
       $scope.houseForm.submitted = true;
+      $scope.houseForm.identityCardCheck = true;
     }
   }
+
+  //var arr = [];
+  //var cardBox = myFrame.window.document.getElementById("cardBox");
+  //var cardBoxLen = $(cardBox).children('.row').length;
+  //for (var i = 0; i < cardBoxLen; i++) {
+  //  if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
+  //    arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
+  //  }
+  //}
 
   function cancel() {
     $modalInstance.dismiss('cancel');
