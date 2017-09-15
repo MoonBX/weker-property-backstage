@@ -278,7 +278,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
   }
 }
 
-function visitorCtl($rootScope, $location, $state, logSrv, mainSrv){
+function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   var vm = this;
 
   vm.getVisitorList = getVisitorList;
@@ -304,14 +304,14 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv){
   function clearSession() {
     sessionStorage.removeItem('filterList');
     vm.selectList = {};
-    getOpenList(1);
+    getVisitorList(1);
     $location.search('id', 1);
   }
 
   function getSearch(obj, cb) {
-    if(obj.et){
-      if(obj.st == obj.et){
-        obj.et = obj.et+24*60*60*1000-1;
+    if(obj.endTime){
+      if(obj.startTime == obj.endTime){
+        obj.endTime = obj.endTime+24*60*60*1000-1;
       }
     }
     console.log(obj);
@@ -329,10 +329,31 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv){
     }
   }
 
-  function getVisitorList(){
-    logSrv.getVisitorList(1, 7).then(function(res){
+  function getVisitorList(pageNo, obj){
+    logSrv.getVisitorList(pageNo, 7, obj).then(function(res){
+      vm.pages = [];
       if(res.success){
-        vm.visitorList = res.data.list;
+        if(res.data.list){
+          vm.visitorList = res.data.list;
+          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesTotal = res.data.total;
+          var pagesSplit = 7;
+          if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
+            vm.isFirstPage = true;
+            vm.isLastPage = true;
+          } else if (vm.pageNo == 1) {
+            vm.isFirstPage = true;
+            vm.isLastPage = false;
+          } else if (vm.pageNo == vm.pagesNum) {
+            vm.isLastPage = true;
+            vm.isFirstPage = false;
+          }
+          mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
+        }
+      }else if(res.code == "401"){
+        $rootScope.$broadcast('tokenExpired');
+      } else {
+        toastr.info(res.message);
       }
     })
   }

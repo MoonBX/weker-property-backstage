@@ -1,11 +1,12 @@
-<!--<div class="aside">-->
 <div class="content-head">
-  <i class="pull-left fa fa-chevron-left m-r-sm m-t-xs"
-     style="cursor: pointer;margin-top: 20px"
-     ng-if="createVm.householdStep == 2"
-     ng-click="createVm.back()">
-  </i>
-  <div class="text-center text-md">添加住户</div>
+  <div class="text-center text-md">
+    添加住户
+    <i class="pull-right fa fa-remove fa-2x m-r-sm m-t-xs"
+       style="cursor: pointer; margin-top: 8px;"
+       ng-click="createVm.cancel()">
+    </i>
+  </div>
+
 </div>
 
 <form class="w-content-main clearfix"
@@ -90,8 +91,10 @@
           </div>
         </div>
         <div class="no-card-info" ng-if="!createVm.idCardList">
-          <div class="m-b-xs" style="width: 120px; height: 80px; background-color: #000"></div>
-          <div class="text-sm">身份信息展示区域</div>
+          <div class="m-b-xs" style="width: 120px; height: 80px;">
+            <img src="images/icon_idcard_noshadow.png" alt="">
+          </div>
+          <div class="text-sm m-t-md" style="color: #A9C7F7; font-size: 14px">身份信息展示区域</div>
         </div>
       </div>
     </div>
@@ -242,7 +245,15 @@
     </div>
   </div>
   <div ng-if="createVm.householdStep == 2">
-    读取卡号
+    <div class="id-card-box">
+      <div class="id-card p-lg pos-relative" style="min-height: 0">
+        <div class="card-info">
+          <h4 class="no-margin m-b-sm">{{createVm.idCardList.customerName}}</h4>
+          <div class="m-b-sm">房间地址: <span class="m-l-xs">梦想小镇天使村10幢3单元0302室</span></div>
+          <div>有效期限: <span class="m-l-xs">永久</span></div>
+        </div>
+      </div>
+    </div>
   </div>
 
 </form>
@@ -256,6 +267,7 @@
     -webkit-border-radius: 0;
     -moz-border-radius: 0;
     border-radius: 0;
+    width: 100%;
   }
 
   .id-card-box {

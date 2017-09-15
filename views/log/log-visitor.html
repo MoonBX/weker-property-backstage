@@ -4,45 +4,48 @@
       <label class="w-label-control">访客姓名: </label>
       <input type="text"
              class="form-control w-sm pull-left m-r-lg"
-             ng-model="visitorVm.selectList.name">
+             ng-model="visitorVm.selectList.visitorName">
     </div>
     <div class="item m-b-sm">
       <label class="w-label-control">身份证号码: </label>
       <input type="text"
              class="form-control w-sm pull-left m-r-lg"
-             ng-model="visitorVm.selectList.name">
+             ng-model="visitorVm.selectList.identityNum">
     </div>
     <div class="item m-b-sm">
-      <label class="w-label-control">设备名称: </label>
-      <input type="text"
-             class="form-control w-sm pull-left m-r-lg"
-             ng-model="visitorVm.selectList.name">
+      <label class="w-label-control">设备类型: </label>
+      <div class="w-sm pull-left m-r-lg">
+        <my-select model="visitorVm.selectList.deviceType"
+                   placeholder="请选择设备类型"
+                   opt-list="['围墙机', '单元机']">
+        </my-select>
+      </div>
     </div>
     <div class="item m-b-sm">
       <label class="w-label-control">被呼叫对象: </label>
       <input type="text"
              class="form-control w-sm pull-left m-r-lg"
-             ng-model="visitorVm.selectList.name">
+             ng-model="visitorVm.selectList.pattern">
     </div>
     <div class="item m-b-sm">
       <label class="w-label-control">时间范围: </label>
       <input type="text"
-             ng-model="visitorVm.selectList.st"
+             ng-model="visitorVm.selectList.startTime"
              class="form-control w-sm pull-left m-r-xs bg-date"
              data-date-format="yyyy-MM-dd"
              data-date-type="number"
-             data-max-date="{{visitorVm.selectList.et||'today'}}"
+             data-max-date="{{visitorVm.selectList.endTime||'today'}}"
              data-autoclose="1"
              bs-datepicker
              placeholder=""
       />
       <label class="pull-left datepicker-split">—</label>
       <input type="text"
-             ng-model="visitorVm.selectList.et"
+             ng-model="visitorVm.selectList.endTime"
              class="form-control w-sm pull-left m-r-lg bg-date"
              data-date-format="yyyy-MM-dd"
              data-date-type="number"
-             data-min-date="{{visitorVm.selectList.st}}"
+             data-min-date="{{visitorVm.selectList.startTime}}"
              data-max-date="today"
              data-autoclose="1"
              bs-datepicker
@@ -54,7 +57,7 @@
     <my-filter-button get-search="visitorVm.getSearch(selectList, getList)"
                       clear-session="visitorVm.clearSession()"
                       select-list="visitorVm.selectList"
-                      get-list="visitorVm.getOpenList">
+                      get-list="visitorVm.getVisitorList">
     </my-filter-button>
   </div>
 </div>
@@ -63,25 +66,25 @@
 
   <table class="table table-striped wk-table">
     <thead>
-    <th width="13%">设备名称</th>
+    <th width="14%">设备名称</th>
     <th width="13%">被呼叫对象</th>
-    <th width="13%">访客姓名</th>
+    <th width="12%">访客姓名</th>
     <th width="13%">身份证</th>
     <th width="12%">住址</th>
     <th width="12%">呼叫时间</th>
     <th width="12%">缩略图</th>
     <th width="12%">操作</th>
     </thead>
-    <tr ng-repeat="item in openVm.intercomList">
-      <td>{{item.blockName || '-'}}</td>
-      <td>{{item.deviceType || '-'}}</td>
-      <td>{{item.name || '-'}}</td>
-      <td>{{item.mobile || '-'}}</td>
-      <td>{{item.cardType}}</td>
-      <td>{{item.unlockTime | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
+    <tr ng-repeat="item in visitorVm.visitorList">
+      <td>{{item.deviceName || '-'}}</td>
+      <td>{{item.pattern || '-'}}</td>
+      <td>{{item.visitorName || '-'}}</td>
+      <td>{{item.identityNum || '-'}}</td>
+      <td>{{item.address}}</td>
+      <td>{{item.callTime | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
       <td>
         <div>
-          <img ng-src="{{item.snapshot}}" alt="..." style="width: 88px;">
+          <img ng-src="{{item.faceImage}}" alt="..." style="width: 88px;">
         </div>
       </td>
       <td>
@@ -92,19 +95,19 @@
   </table>
 </div>
 <div class="m-t-lg text-center"
-     ng-if="!openVm.intercomList.length">
+     ng-if="!visitorVm.visitorList.length">
   暂无数据
 </div>
 <my-pagination
-  ng-if="openVm.intercomList.length"
-  pages="openVm.pages"
+  ng-if="visitorVm.visitorList.length"
+  pages="visitorVm.pages"
   page-active="page.active"
-  is-first-page="openVm.isFirstPage"
-  is-last-page="openVm.isLastPage"
-  pages-num="openVm.pagesNum"
-  pages-total="openVm.pagesTotal"
+  is-first-page="visitorVm.isFirstPage"
+  is-last-page="visitorVm.isLastPage"
+  pages-num="visitorVm.pagesNum"
+  pages-total="visitorVm.pagesTotal"
   page-skip="pageSkip"
-  select-page="openVm.selectPage(pageTag, pageNo)">
+  select-page="visitorVm.selectPage(pageTag, pageNo)">
 </my-pagination>
 
 <div class="clearfix"></div>
