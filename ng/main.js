@@ -23,6 +23,12 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
       {b_title: '日志查询', itemName:"开门日志", sref:"log.open", pageNo: 1, isActive: false},
       {b_title: '日志查询', itemName:"防拆日志", sref:"log.remove", pageNo: 1, isActive: false},
       {b_title: '日志查询', itemName:"访客日志", sref:"log.visitor", pageNo: 1, isActive: false},
+    ]},
+    {title: '数据分析', icon: 'fa-file-text-o', sref: 'analyse', path: 'analyse', isActive: false, item:[
+      {b_title: '数据分析', itemName:"重点关注", sref:"analyse.zhongdian", pageNo: 1, isActive: false},
+      {b_title: '数据分析', itemName:"人口分析", sref:"analyse.renkou", pageNo: 1, isActive: false},
+      {b_title: '数据分析', itemName:"房屋分析", sref:"analyse.fangwu", pageNo: 1, isActive: false},
+      {b_title: '数据分析', itemName:"研判分析", sref:"analyse.yanpan", pageNo: 1, isActive: false}
     ]}
   ];
   var pathNav = [
@@ -149,6 +155,9 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
       }else{
         mainVm.asideArr[i].isActive = false;
       }
+    }
+    if(sessionStorage.filterList){
+      sessionStorage.removeItem('filterList');
     }
     if(!mainVm.currentNav.item){
       cfpLoadingBar.start();

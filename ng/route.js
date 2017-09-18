@@ -114,4 +114,24 @@ function config($stateProvider, $urlRouterProvider, $httpProvider){
       controller: "visitorCtl",
       controllerAs: "visitorVm"
     })
+    .state('analyse', {
+      url: "/analyse",
+      templateUrl: "views/analyse/analyse.html"
+    })
+    .state('analyse.zhongdian', {
+      url: "/zhongdian?:id",
+      templateUrl: "views/analyse/analyse-zhongdian.html"
+    })
+    .state('analyse.renkou', {
+      url: "/renkou?:id",
+      templateUrl: "views/analyse/analyse-renkou.html"
+    })
+    .state('analyse.fangwu', {
+      url: "/fangwu?:id",
+      templateUrl: "views/analyse/analyse-fangwu.html"
+    })
+    .state('analyse.yanpan', {
+      url: "/yanpan?:id",
+      templateUrl: "views/analyse/analyse-yanpan.html"
+    })
 }

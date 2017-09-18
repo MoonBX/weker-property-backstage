@@ -56,7 +56,7 @@
             </div>
             <div class="row pos-relative">
               <label class="w-label-control id-card-label">出&nbsp;生:</label>
-              <label class="w-label-control">1999 <b>年</b> 08 <b>月</b> 28 <b>日</b></label>
+              <label class="w-label-control">{{createVm.idCardList.birthDate}}</label>
             </div>
             <div class="row pos-relative m-b-xs">
               <label class="w-label-control id-card-label">地&nbsp;址:</label>
@@ -249,11 +249,12 @@
       <div class="id-card p-lg pos-relative" style="min-height: 0">
         <div class="card-info">
           <h4 class="no-margin m-b-sm">{{createVm.idCardList.customerName}}</h4>
-          <div class="m-b-sm">房间地址: <span class="m-l-xs">梦想小镇天使村10幢3单元0302室</span></div>
+          <div class="m-b-sm">房间地址: <span class="m-l-xs">分区一1幢1单元302</span></div>
           <div>有效期限: <span class="m-l-xs">永久</span></div>
         </div>
       </div>
     </div>
+    <div class="other-info">读卡功能正在开发中...</div>
   </div>
 
 </form>
@@ -261,6 +262,9 @@
 
 <!--</div>-->
 <style>
+  .modal-dialog{
+    width: 650px;
+  }
   .content-head {
     height: 50px;
     line-height: 50px;

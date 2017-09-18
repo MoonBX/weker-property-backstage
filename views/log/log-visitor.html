@@ -73,7 +73,7 @@
     <th width="12%">住址</th>
     <th width="12%">呼叫时间</th>
     <th width="12%">缩略图</th>
-    <th width="12%">操作</th>
+    <!--<th width="12%">操作</th>-->
     </thead>
     <tr ng-repeat="item in visitorVm.visitorList">
       <td>{{item.deviceName || '-'}}</td>
@@ -87,10 +87,10 @@
           <img ng-src="{{item.faceImage}}" alt="..." style="width: 88px;">
         </div>
       </td>
-      <td>
-        <a class="m-r-sm" href="javascript:;"
-           ng-click="logVm.openModal('modal-open-detail','detailOpenCtl as detailVm', item)">详情</a>
-      </td>
+      <!--<td>-->
+        <!--<a class="m-r-sm" href="javascript:;"-->
+           <!--ng-click="logVm.openModal('modal-open-detail','detailOpenCtl as detailVm', item)">详情</a>-->
+      <!--</td>-->
     </tr>
   </table>
 </div>

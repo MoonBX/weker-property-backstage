@@ -7,6 +7,7 @@ angular.module('app', [
   'ui.bootstrap',
   'mgcrea.ngStrap.datepicker',
   'mgcrea.ngStrap.dropdown',
+  'ngAside',
   'ngAnimate',
   'angular-loading-bar',
   //'angular-underscore',
@@ -202,9 +203,31 @@ function config($stateProvider, $urlRouterProvider, $httpProvider){
       controller: "removeCtl",
       controllerAs: "removeVm"
     })
-    .state('log.ocx', {
-      url: "/ocx",
-      templateUrl: "views/log/log-ocx.html"
+    .state('log.visitor', {
+      url: "/visitor?:id",
+      templateUrl: "views/log/log-visitor.html",
+      controller: "visitorCtl",
+      controllerAs: "visitorVm"
+    })
+    .state('analyse', {
+      url: "/analyse",
+      templateUrl: "views/analyse/analyse.html"
+    })
+    .state('analyse.zhongdian', {
+      url: "/zhongdian?:id",
+      templateUrl: "views/analyse/analyse-zhongdian.html"
+    })
+    .state('analyse.renkou', {
+      url: "/renkou?:id",
+      templateUrl: "views/analyse/analyse-renkou.html"
+    })
+    .state('analyse.fangwu', {
+      url: "/fangwu?:id",
+      templateUrl: "views/analyse/analyse-fangwu.html"
+    })
+    .state('analyse.yanpan', {
+      url: "/yanpan?:id",
+      templateUrl: "views/analyse/analyse-yanpan.html"
     })
 }
 /**
@@ -231,7 +254,13 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
     {title: '日志查询', icon: 'fa-file-text-o', sref: 'log', path: 'log', isActive: false, item:[
       {b_title: '日志查询', itemName:"开门日志", sref:"log.open", pageNo: 1, isActive: false},
       {b_title: '日志查询', itemName:"防拆日志", sref:"log.remove", pageNo: 1, isActive: false},
-      //{b_title: '日志查询', itemName:"ocx", sref:"log.ocx", pageNo: 1, isActive: false},
+      {b_title: '日志查询', itemName:"访客日志", sref:"log.visitor", pageNo: 1, isActive: false},
+    ]},
+    {title: '数据分析', icon: 'fa-file-text-o', sref: 'analyse', path: 'analyse', isActive: false, item:[
+      {b_title: '数据分析', itemName:"重点关注", sref:"analyse.zhongdian", pageNo: 1, isActive: false},
+      {b_title: '数据分析', itemName:"人口分析", sref:"analyse.renkou", pageNo: 1, isActive: false},
+      {b_title: '数据分析', itemName:"房屋分析", sref:"analyse.fangwu", pageNo: 1, isActive: false},
+      {b_title: '数据分析', itemName:"研判分析", sref:"analyse.yanpan", pageNo: 1, isActive: false}
     ]}
   ];
   var pathNav = [
@@ -244,6 +273,7 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
     {path: '/door/common', b_title: '门禁管理', itemName: '公卡管理'},
     {path: '/log/open', b_title: '日志查询', itemName: '开门日志'},
     {path: '/log/remove', b_title: '日志查询', itemName: '防拆日志'},
+    {path: '/log/visitor', b_title: '日志查询', itemName: '访客日志'},
     {path: '/account/update-password', b_title: '修改密码', itemName: ''}
   ];
   mainVm.currentNav = {title: '首页', b_title: '首页', icon: 'user', sref: 'home', path: 'index', isActive: true};
@@ -357,6 +387,9 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
       }else{
         mainVm.asideArr[i].isActive = false;
       }
+    }
+    if(sessionStorage.filterList){
+      sessionStorage.removeItem('filterList');
     }
     if(!mainVm.currentNav.item){
       cfpLoadingBar.start();
@@ -1257,6 +1290,7 @@ angular.module('doorMdl', [])
   .controller('importHouseholdCtl', importHouseholdCtl)
   .controller('crudCommonCtl', crudCommonCtl)
   .controller('detailCommonCtl', detailCommonCtl)
+  .controller('AsideCtrl', AsideCtrl)
   .controller('doorAlarm', doorAlarm);
 
 function doorCtl($modal) {
@@ -1280,7 +1314,7 @@ function doorCtl($modal) {
   }
 }
 
-function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorSrv, mainSrv, toastr) {
+function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $stateParams, doorSrv, mainSrv, toastr) {
   var vm = this;
   vm.getResidentList = getResidentList;
   vm.selectPage = selectPage;
@@ -1343,6 +1377,17 @@ function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorS
       console.log(res);
       vm.block.rooms = res.data;
     })
+  }
+
+  vm.openAside = openAside;
+  function openAside(){
+    console.log('open');
+    $aside.open({
+      templateUrl: 'views/door/aside.demo.tpl.html',
+      backdrop: 'static',
+      placement: 'right',
+      controller: 'createHouseholdCtl as createVm'
+    });
   }
 
   checkFilter();
@@ -1450,6 +1495,10 @@ function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorS
       getResidentList(parseInt($location.search().id), vm.selectList);
     }
   });
+}
+
+function AsideCtrl($scope, $modalInstance){
+  console.log('a');
 }
 
 function commonCtl($rootScope, $location, $state, $stateParams, $modal, doorSrv, mainSrv) {
@@ -1639,7 +1688,7 @@ function detailHouseholdCtl(items, $modalInstance) {
   }
 }
 
-function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, items, toastr) {
+function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, toastr) {
   var vm = this;
   vm.postList = {};
   vm.block = {};
@@ -1654,15 +1703,8 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
 
   //vm.userType_make_me = false;
 
-  if (items) {
-    console.log(items);
-    vm.title = '编辑住户';
-    vm.postList = items;
-    getPartition();
-  } else {
-    vm.title = '添加住户';
-    getPartition();
-  }
+  vm.title = '添加住户';
+  getPartition();
 
   function transform(obj) {
     var arr = [];
@@ -1693,6 +1735,12 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
       vm.userType_make_me = false;
       vm.postList.effectiveType = 1;
     }
+  }
+
+  vm.compareIdident = compareIdident;
+  function compareIdident(){
+    console.log('ain');
+
   }
 
   vm.radio_change = radio_change;
@@ -1764,6 +1812,33 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     }
   }
 
+  vm.idCardCheck = 0;
+  vm.getCardInfo = getCardInfo;
+  function getCardInfo(cardNo){
+    if(cardNo&&cardNo.length == 18){
+      doorSrv.getIdCardInfo(cardNo).then(function(res){
+        console.log(res);
+        if(res.success){
+          vm.idCardList = res.data;
+          //if(cardNo == vm.idCardList.identityNum){
+            vm.idCardCheck = 1;
+          //}else{
+          //  toastr.info('匹配身份证失败');
+          //  vm.idCardCheck = 2;
+          //}
+        }else{
+          toastr.info('匹配身份证失败');
+          vm.idCardCheck = 2;
+        }
+
+      })
+    }else{
+      toastr.info('请输入正确的身份证号码');
+      vm.idCardCheck = 0;
+    }
+  }
+
+
   vm.isEntranceExist = false;
   function checkEntranceExist(partitionId){
     console.log(vm.postList.unitId);
@@ -1775,48 +1850,55 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     })
   }
 
+  vm.back = back;
+  function back(){
+    vm.householdStep = 1;
+  }
+
+  vm.householdStep = 1;
   function createResident(obj) {
     console.log(obj);
-
-    if ($scope.houseForm.$valid) {
-      var arr = [];
-      var cardBox = myFrame.window.document.getElementById("cardBox");
-      var cardBoxLen = $(cardBox).children('.row').length;
-      for (var i = 0; i < cardBoxLen; i++) {
-        if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
-          arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
-        }
-      }
+    if ($scope.houseForm.$valid&&vm.postList.idCard == vm.idCardList.identityNum) {
       if (obj.effectiveEndTime) {
         if (obj.effectiveStartTime == obj.effectiveEndTime) {
           obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
         }
       }
-      if (vm.userType_make_me) {
-        obj.effectiveType = 0
-      }
-      else {
-        obj.effectiveType = 1
-      }
-      obj.cardTypeNames = arr.join(',');
-      console.log(obj);
+      if (vm.userType_make_me) { obj.effectiveType = 0 }
+      else { obj.effectiveType = 1 }
+      //obj.cardTypeNames = arr.join(',');
+      obj.name = vm.idCardList.customerName;
       doorSrv.createResident(obj).then(function (res) {
         console.log(res);
         if (res.success) {
-          toastr.info("新建住户成功");
-          $timeout(function () {
-            $rootScope.$broadcast('refresh-resident', 'create');
-            cancel();
-          }, 500);
+          var faceObj = {};
+          faceObj.id = vm.idCardList.id;
+          faceObj.mobile = obj.mobile;
+          doorSrv.uploadFaceImage(faceObj).then(function(res){
+            if(res.success){
+              toastr.info("新建住户成功");
+              $rootScope.$broadcast('refresh-resident', 'create');
+              vm.householdStep = 2;
+            }
+          })
         } else {
           toastr.info(res.message);
         }
       })
     } else {
-      console.log($scope.houseForm)
       $scope.houseForm.submitted = true;
+      $scope.houseForm.identityCardCheck = true;
     }
   }
+
+  //var arr = [];
+  //var cardBox = myFrame.window.document.getElementById("cardBox");
+  //var cardBoxLen = $(cardBox).children('.row').length;
+  //for (var i = 0; i < cardBoxLen; i++) {
+  //  if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
+  //    arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
+  //  }
+  //}
 
   function cancel() {
     $modalInstance.dismiss('cancel');
@@ -2262,6 +2344,7 @@ angular.module('logMdl', [])
   .controller('logCtl', logCtl)
   .controller('openCtl', openCtl)
   .controller('removeCtl', removeCtl)
+  .controller('visitorCtl', visitorCtl)
   .controller('detailOpenCtl', detailOpenCtl);
 
 function logCtl($modal){
@@ -2532,6 +2615,88 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
 
     })
   }
+}
+
+function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+  var vm = this;
+
+  vm.getVisitorList = getVisitorList;
+  vm.selectPage = selectPage;
+  vm.getSearch = getSearch;
+  vm.clearSession = clearSession;
+  vm.selectList = {};
+  vm.visitorList = [];
+  vm.pageNo = parseInt($location.search().id);
+
+  checkFilter();
+  function checkFilter() {
+    if (!sessionStorage.filterList) {
+      getVisitorList(vm.pageNo);
+    } else {
+      var obj = JSON.parse(sessionStorage.filterList);
+      vm.selectList = obj;
+      getVisitorList(vm.pageNo, vm.selectList);
+      $location.search('id', vm.pageNo);
+    }
+  }
+
+  function clearSession() {
+    sessionStorage.removeItem('filterList');
+    vm.selectList = {};
+    getVisitorList(1);
+    $location.search('id', 1);
+  }
+
+  function getSearch(obj, cb) {
+    if(obj.endTime){
+      if(obj.startTime == obj.endTime){
+        obj.endTime = obj.endTime+24*60*60*1000-1;
+      }
+    }
+    console.log(obj);
+    mainSrv.getSearch(obj, cb);
+    $location.search('id', 1);
+  }
+
+  function selectPage(tag, pageNo) {
+    if (tag == 'next') {
+      $state.go('log.visitor', {id: vm.pageNo + 1});
+    } else if (tag == 'prev') {
+      $state.go('log.visitor', {id: vm.pageNo - 1});
+    } else {
+      $state.go('log.visitor', {id: pageNo});
+    }
+  }
+
+  function getVisitorList(pageNo, obj){
+    logSrv.getVisitorList(pageNo, 7, obj).then(function(res){
+      vm.pages = [];
+      if(res.success){
+        if(res.data.list){
+          vm.visitorList = res.data.list;
+          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesTotal = res.data.total;
+          var pagesSplit = 7;
+          if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
+            vm.isFirstPage = true;
+            vm.isLastPage = true;
+          } else if (vm.pageNo == 1) {
+            vm.isFirstPage = true;
+            vm.isLastPage = false;
+          } else if (vm.pageNo == vm.pagesNum) {
+            vm.isLastPage = true;
+            vm.isFirstPage = false;
+          }
+          mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
+        }
+      }else if(res.code == "401"){
+        $rootScope.$broadcast('tokenExpired');
+      } else {
+        toastr.info(res.message);
+      }
+    })
+  }
+
 }
 
 function detailOpenCtl(items, $modalInstance){
@@ -3425,6 +3590,7 @@ angular.module('doorApi', [])
 doorSrv.$inject = ['$q', '$http', 'mainSrv'];
 function doorSrv($q, $http, mainSrv){
   var server = mainSrv.getHttpRoot();
+  var mockServer = "https://easy-mock.com/mock/59b2565be0dc663341a27fd5/weker";
   var doorList = {
     getResident: function(pageNo, limit, obj){
       var defer = $q.defer();
@@ -3449,7 +3615,7 @@ function doorSrv($q, $http, mainSrv){
       var defer = $q.defer();
       $http({
         method: 'POST',
-        url: server + '/community/resident/add',
+        url: server + '/community/resident/add/wuhan',
         data: obj,
         headers: {
           'token': localStorage.wekerToken,
@@ -3592,6 +3758,43 @@ function doorSrv($q, $http, mainSrv){
           defer.reject(error);
         });
       return defer.promise;
+    },
+    getIdCardInfo: function(identityNum){
+      var defer = $q.defer();
+      $http({
+        method: 'GET',
+        url: server + '/idCard/info/query/'+ identityNum,
+        headers: {
+          'token': localStorage.wekerToken,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+        .success(function(data){
+          defer.resolve(data);
+        })
+        .error(function(error){
+          defer.reject(error);
+        });
+      return defer.promise;
+    },
+    uploadFaceImage: function(obj){
+      var defer = $q.defer();
+      $http({
+        method: 'POST',
+        url: server + '/face/recognition/facesetAddUser',
+        data: obj,
+        headers: {
+          'token': localStorage.wekerToken,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+        .success(function(data){
+          defer.resolve(data);
+        })
+        .error(function(error){
+          defer.reject(error);
+        });
+      return defer.promise;
     }
   };
   return doorList;
@@ -3693,6 +3896,25 @@ function logSrv($q, $http, mainSrv) {
           defer.reject(error);
         });
       return defer.promise;
+    },
+    getVisitorList: function(pageNo, limit, obj){
+      var defer = $q.defer();
+      $http({
+        method: 'GET',
+        url: server + '/visitor/record/list/' + pageNo + '/' + limit,
+        params: obj,
+        headers: {
+          'token': localStorage.wekerToken,
+          'Content-Type': 'application/json;charset=UTF-8'
+        }
+      })
+        .success(function (data) {
+          defer.resolve(data);
+        })
+        .error(function (error) {
+          defer.reject(error);
+        });
+      return defer.promise;
     }
   }
   return logList;
@@ -3706,8 +3928,8 @@ angular.module('mainApi', [])
 
 mainSrv.$inject = ['$q', '$http'];
 function mainSrv($q, $http){
-  //var server = "http://192.168.23.241:8082";
-  var server = "http://114.55.143.170:8082";
+  var server = "http://192.168.23.241:8082";
+  //var server = "http://114.55.143.170:8082";
   // var server = "http://116.62.39.38:8081";
 
   var mainList = {
