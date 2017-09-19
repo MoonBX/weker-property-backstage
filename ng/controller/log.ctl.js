@@ -8,7 +8,7 @@ angular.module('logMdl', [])
   .controller('visitorCtl', visitorCtl)
   .controller('detailOpenCtl', detailOpenCtl);
 
-function logCtl($modal){
+function logCtl($modal) {
   var vm = this;
   vm.openModal = openModal;
 
@@ -16,7 +16,7 @@ function logCtl($modal){
     $modal.open({
       templateUrl: './views/log/' + template + '.html',
       controller: controller,
-      backdrop:'static',
+      backdrop: 'static',
       size: 'sm',
       resolve: {
         items: function () {
@@ -29,7 +29,7 @@ function logCtl($modal){
   }
 }
 
-function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+function openCtl($rootScope, $modal, $location, $state, logSrv, mainSrv, toastr) {
   var vm = this;
   vm.getOpenList = getOpenList;
   vm.selectPage = selectPage;
@@ -42,24 +42,24 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   vm.pageNo = parseInt($location.search().id);
 
   getPartitions();
-  function getPartitions(){
-    mainSrv.getPartitions().then(function(res){
+  function getPartitions() {
+    mainSrv.getPartitions().then(function (res) {
       console.log(res);
       vm.block.partitions = res.data;
     })
   }
 
   vm.getBlocks = getBlocks;
-  function getBlocks(id){
-    mainSrv.getBlocks(id).then(function(res){
+  function getBlocks(id) {
+    mainSrv.getBlocks(id).then(function (res) {
       console.log(res);
       vm.block.blocks = res.data;
     })
   }
 
   vm.getUnits = getUnits;
-  function getUnits(id){
-    mainSrv.getUnits(id).then(function(res){
+  function getUnits(id) {
+    mainSrv.getUnits(id).then(function (res) {
       console.log(res);
       vm.block.units = res.data;
     })
@@ -89,9 +89,9 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   }
 
   function getSearch(obj, cb) {
-    if(obj.et){
-      if(obj.st == obj.et){
-        obj.et = obj.et+24*60*60*1000-1;
+    if (obj.et) {
+      if (obj.st == obj.et) {
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
       }
     }
     console.log(obj);
@@ -109,12 +109,12 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
     }
   }
 
-  function getOpenList(pageNo, obj){
+  function getOpenList(pageNo, obj) {
     logSrv.getIntercom(pageNo, 7, obj).then(function (res) {
       console.log('获取开门日志列表: ', res);
       vm.pages = [];
-      if(res.success){
-        if(res.data.list){
+      if (res.success) {
+        if (res.data.list) {
           for (var i = 0; i < res.data.list.length; i++) {
             switch (res.data.list[i].type) {
               case 0:
@@ -127,7 +127,16 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
                 res.data.list[i].type = '密码';
                 break;
               case 3:
-                res.data.list[i].type = 'APP';
+                res.data.list[i].type = '手机开门';
+                break;
+              case 4:
+                res.data.list[i].type = '人脸开门';
+                break;
+              case 5:
+                res.data.list[i].type = '身份证开门';
+                break;
+              case 6:
+                res.data.list[i].type = '扫码开门';
                 break;
               default:
                 res.data.list[i].type = '';
@@ -173,16 +182,33 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
           }
           mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
         }
-      }else if(res.code == "401"){
+      } else if (res.code == "401") {
         $rootScope.$broadcast('tokenExpired');
       } else {
         toastr.info(res.message);
       }
     })
   }
+  vm.gallary = gallary;
+  function gallary(url) {
+    $modal.open({
+      templateUrl: './views/log/gallary.html',
+      controller: function($scope, items){
+        $scope.url = items;
+      },
+      size: 'sm',
+      resolve: {
+        items: function () {
+          if (url) {
+            return url;
+          }
+        }
+      }
+    })
+  }
 }
 
-function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
+function removeCtl($rootScope, $location, $state, logSrv, mainSrv) {
   var vm = this;
   vm.getRemoveList = getRemoveList;
   vm.selectPage = selectPage;
@@ -227,12 +253,12 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
     }
   }
 
-  function getRemoveList(pageNo, obj){
+  function getRemoveList(pageNo, obj) {
     logSrv.getAlarmInfo(pageNo, 7, obj).then(function (res) {
       console.log('获取公卡列表: ', res);
       vm.pages = [];
-      if(res.success){
-        if(res.data.list){
+      if (res.success) {
+        if (res.data.list) {
           for (var i = 0; i < res.data.list.length; i++) {
             switch (res.data.list[i].type) {
               case 0:
@@ -268,7 +294,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
           }
           mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
         }
-      }else if(res.code == "401"){
+      } else if (res.code == "401") {
         $rootScope.$broadcast('tokenExpired');
       } else {
         toastr.info(res.message);
@@ -278,7 +304,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
   }
 }
 
-function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+function visitorCtl($rootScope, $location, $modal, $state, logSrv, mainSrv, toastr) {
   var vm = this;
 
   vm.getVisitorList = getVisitorList;
@@ -309,14 +335,32 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   }
 
   function getSearch(obj, cb) {
-    if(obj.endTime){
-      if(obj.startTime == obj.endTime){
-        obj.endTime = obj.endTime+24*60*60*1000-1;
+    if (obj.endTime) {
+      if (obj.startTime == obj.endTime) {
+        obj.endTime = obj.endTime + 24 * 60 * 60 * 1000 - 1;
       }
     }
     console.log(obj);
     mainSrv.getSearch(obj, cb);
     $location.search('id', 1);
+  }
+
+  vm.gallary = gallary;
+  function gallary(url) {
+    $modal.open({
+      templateUrl: './views/log/gallary.html',
+      controller: function($scope, items){
+        $scope.url = items;
+      },
+      size: 'sm',
+      resolve: {
+        items: function () {
+          if (url) {
+            return url;
+          }
+        }
+      }
+    })
   }
 
   function selectPage(tag, pageNo) {
@@ -329,11 +373,11 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
     }
   }
 
-  function getVisitorList(pageNo, obj){
-    logSrv.getVisitorList(pageNo, 7, obj).then(function(res){
+  function getVisitorList(pageNo, obj) {
+    logSrv.getVisitorList(pageNo, 7, obj).then(function (res) {
       vm.pages = [];
-      if(res.success){
-        if(res.data.list){
+      if (res.success) {
+        if (res.data.list) {
           vm.visitorList = res.data.list;
           vm.pagesNum = Math.ceil(res.data.total / 7);
           vm.pagesTotal = res.data.total;
@@ -350,7 +394,7 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
           }
           mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
         }
-      }else if(res.code == "401"){
+      } else if (res.code == "401") {
         $rootScope.$broadcast('tokenExpired');
       } else {
         toastr.info(res.message);
@@ -360,7 +404,7 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
 
 }
 
-function detailOpenCtl(items, $modalInstance){
+function detailOpenCtl(items, $modalInstance) {
   var vm = this;
   vm.model = items;
   console.log(items);

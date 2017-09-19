@@ -8,13 +8,6 @@
     </div>
 
     <div class="item m-b-sm">
-      <label class="w-label-control">手机号码: </label>
-      <input type="text"
-             class="form-control w-sm pull-left m-r-lg"
-             ng-model="openVm.selectList.mobile">
-    </div>
-
-    <div class="item m-b-sm">
       <label class="w-label-control">设备类型: </label>
       <div class="w-sm pull-left m-r-lg">
         <my-select model="openVm.selectList.deviceType"
@@ -25,12 +18,21 @@
     </div>
 
     <div class="item m-b-sm">
-      <label class="w-label-control">日志类型: </label>
+      <label class="w-label-control">开门类型: </label>
       <div class="w-sm pull-left m-r-lg">
-        <my-select model="openVm.selectList.type"
-                   placeholder="请选择日志类型"
-                   opt-list="['呼叫', '刷卡', '密码', 'APP']">
-        </my-select>
+        <select ui-select2
+                ng-model="editVm.selectList.type"
+                data-placeholder="请选择开门类型"
+                name="type">
+          <option value=""></option>
+          <option ng-value="0">呼叫</option>
+          <option ng-value="1">刷卡</option>
+          <option ng-value="2">密码</option>
+          <option ng-value="3">手机开门</option>
+          <option ng-value="4">人脸开门</option>
+          <option ng-value="5">身份证开门</option>
+          <option ng-value="6">扫码开门</option>
+        </select>
       </div>
     </div>
 
@@ -87,31 +89,27 @@
 
   <table class="table table-striped wk-table">
     <thead>
-    <th width="10%">单元信息</th>
+    <th width="20%">单元信息</th>
     <th width="10%">设备类型</th>
-    <th width="5%">姓名</th>
-    <th width="10%">手机号码</th>
-    <th width="8%">卡类型</th>
-    <th width="10%">卡号</th>
+    <th width="10%">姓名</th>
     <th width="10%">通话时长</th>
-    <th width="10%">开门时间</th>
-    <th width="10%">日志类型</th>
+    <th width="20%">开门时间</th>
+    <th width="10%">开门类型</th>
     <th width="10%">缩略图</th>
-    <th width="7%">操作</th>
+    <th width="10%">操作</th>
     </thead>
     <tr ng-repeat="item in openVm.intercomList">
       <td>{{item.blockName || '-'}}</td>
       <td>{{item.deviceType || '-'}}</td>
       <td>{{item.name || '-'}}</td>
-      <td>{{item.mobile || '-'}}</td>
-      <td>{{item.cardType}}</td>
-      <td>{{item.cardNo || '-'}}</td>
       <td>{{item.duration || '-'}}</td>
       <td>{{item.unlockTime | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
       <td>{{item.type || '-'}}</td>
       <td>
         <div>
-          <img ng-src="{{item.snapshot}}" alt="..." style="width: 88px;">
+          <img ng-src="{{item.snapshot}}"
+               alt="..." style="width: 88px;"
+               ng-click="openVm.gallary(item.snapshot)">
         </div>
       </td>
       <td>
@@ -120,10 +118,6 @@
       </td>
     </tr>
   </table>
-
-  <!--<div class="no-data flex-center flex-column">-->
-  <!--暂无数据-->
-  <!--</div>-->
 
 </div>
 <div class="m-t-lg text-center"

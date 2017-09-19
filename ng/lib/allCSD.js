@@ -1380,13 +1380,20 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
   }
 
   vm.openAside = openAside;
-  function openAside(){
+  function openAside(url, controller, item){
     console.log('open');
     $aside.open({
-      templateUrl: 'views/door/aside.demo.tpl.html',
+      templateUrl: 'views/door/'+url,
       backdrop: 'static',
       placement: 'right',
-      controller: 'createHouseholdCtl as createVm'
+      controller: controller,
+      resolve: {
+        items: function () {
+          if (item) {
+            return item;
+          }
+        }
+      }
     });
   }
 
@@ -1688,12 +1695,10 @@ function detailHouseholdCtl(items, $modalInstance) {
   }
 }
 
-function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, toastr) {
+function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, toastr, items) {
   var vm = this;
   vm.postList = {};
   vm.block = {};
-
-  vm.createResident = createResident;
   vm.cancel = cancel;
 
   vm.getBlocks = getBlocks;
@@ -1703,8 +1708,24 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
 
   //vm.userType_make_me = false;
 
-  vm.title = '添加住户';
-  getPartition();
+  if(items){
+    vm.title = '详情';
+    console.log(items);
+    vm.postList = items;
+    getCardInfo(vm.postList.idCard);
+    checkEntranceExist(vm.postList.partitionId);
+    vm.userEffectStatus = 0;
+    check_userType(items.userType);
+    vm.createResident = editResident;
+  }else{
+    vm.title = '新建住户';
+    getPartition();
+    vm.postList.userType = 0;
+    vm.userType_make_me = true;
+    vm.postList.effectiveType = 0;
+    vm.userEffectStatus = 0;
+    vm.createResident = createResident;
+  }
 
   function transform(obj) {
     var arr = [];
@@ -1713,11 +1734,6 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     }
     return arr;
   }
-
-  vm.postList.userType = 0;
-  vm.userType_make_me = true;
-  vm.postList.effectiveType = 0;
-  vm.userEffectStatus = 0;
 
   vm.userType_change_to_effectiveTime = userType_change_to_effectiveTime;
   function userType_change_to_effectiveTime(value) {
@@ -1820,24 +1836,20 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
         console.log(res);
         if(res.success){
           vm.idCardList = res.data;
-          //if(cardNo == vm.idCardList.identityNum){
-            vm.idCardCheck = 1;
-          //}else{
-          //  toastr.info('匹配身份证失败');
-          //  vm.idCardCheck = 2;
-          //}
+          vm.idCardCheck = 1;
+          if(vm.idCardList.mobile){
+            vm.postList.mobile = vm.idCardList.mobile;
+          }
         }else{
           toastr.info('匹配身份证失败');
           vm.idCardCheck = 2;
         }
-
       })
     }else{
       toastr.info('请输入正确的身份证号码');
       vm.idCardCheck = 0;
     }
   }
-
 
   vm.isEntranceExist = false;
   function checkEntranceExist(partitionId){
@@ -1848,6 +1860,23 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
         vm.isEntranceExist = res.data;
       }
     })
+  }
+
+  function check_userType(value) {
+    console.log(value);
+    if (value == 0) {
+      vm.userType_make_me = true;
+      vm.userEffectStatus = 0;
+      vm.postList.effectiveType = 0;
+    } else if (value == 1) {
+      vm.userType_make_me = false;
+      vm.userEffectStatus = 1;
+      vm.postList.effectiveType = 1;
+    } else {
+      vm.userType_make_me = false;
+      vm.userEffectStatus = 2;
+      vm.postList.effectiveType = 1;
+    }
   }
 
   vm.back = back;
@@ -1874,11 +1903,14 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
           var faceObj = {};
           faceObj.id = vm.idCardList.id;
           faceObj.mobile = obj.mobile;
+          console.log(faceObj);
           doorSrv.uploadFaceImage(faceObj).then(function(res){
             if(res.success){
               toastr.info("新建住户成功");
-              $rootScope.$broadcast('refresh-resident', 'create');
-              vm.householdStep = 2;
+              $timeout(function () {
+                $rootScope.$broadcast('refresh-resident', 'create');
+                cancel();
+              }, 500);
             }
           })
         } else {
@@ -1891,14 +1923,49 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     }
   }
 
-  //var arr = [];
-  //var cardBox = myFrame.window.document.getElementById("cardBox");
-  //var cardBoxLen = $(cardBox).children('.row').length;
-  //for (var i = 0; i < cardBoxLen; i++) {
-  //  if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
-  //    arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
-  //  }
-  //}
+  function editResident(obj) {
+    var objNew;
+    if (obj.effectiveEndTime) {
+      if (obj.effectiveStartTime == obj.effectiveEndTime) {
+        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+      }
+    }
+    if (vm.userType_make_me) obj.effectiveType = 0;
+    else obj.effectiveType = 1;
+
+    objNew = {
+      id: obj.id,
+      name: obj.name,
+      userType: obj.userType,
+      mobile: obj.mobile,
+      idCard: obj.idCard,
+      partitionId: obj.partitionId,
+      partitionName: obj.partitionName,
+      blockId: obj.blockId,
+      blockName: obj.blockName,
+      unitId: obj.unitId,
+      unitName: obj.unitName,
+      roomNoId: obj.roomNoId,
+      roomNo: obj.roomNo,
+      effectiveType: obj.effectiveType,
+      effectiveStartTime: obj.effectiveStartTime,
+      effectiveEndTime: obj.effectiveEndTime,
+      cardTypeNames: obj.cardTypeNames
+    };
+    console.log(objNew);
+    doorSrv.editResident(objNew).then(function (res) {
+      console.log(res);
+      if (res.success) {
+        toastr.info("修改住户成功");
+        $timeout(function () {
+          $rootScope.$broadcast('refresh-resident', 'edit');
+          cancel();
+        }, 500);
+      } else {
+        toastr.info(res.message);
+      }
+    })
+  }
 
   function cancel() {
     $modalInstance.dismiss('cancel');
@@ -1983,58 +2050,7 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
     }
   }
 
-  function editResident(obj) {
-    var objNew;
-    var arr = [];
-    var cardBox = myFrame.window.document.getElementById("cardBox");
-    var cardBoxLen = $(cardBox).children('.row').length;
-    for (var i = 0; i < cardBoxLen; i++) {
-      if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
-        arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
-      }
-    }
-    if (obj.effectiveEndTime) {
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-      }
-    }
-    if (vm.userType_make_me) obj.effectiveType = 0;
-    else obj.effectiveType = 1;
 
-    obj.cardTypeNames = arr.join(',');
-    objNew = {
-      id: obj.id,
-      name: obj.name,
-      userType: obj.userType,
-      mobile: obj.mobile,
-      idCard: obj.idCard,
-      partitionId: obj.partitionId,
-      partitionName: obj.partitionName,
-      blockId: obj.blockId,
-      blockName: obj.blockName,
-      unitId: obj.unitId,
-      unitName: obj.unitName,
-      roomNoId: obj.roomNoId,
-      roomNo: obj.roomNo,
-      effectiveType: obj.effectiveType,
-      effectiveStartTime: obj.effectiveStartTime,
-      effectiveEndTime: obj.effectiveEndTime,
-      cardTypeNames: obj.cardTypeNames
-    };
-    console.log(objNew);
-    doorSrv.editResident(objNew).then(function (res) {
-      console.log(res);
-      if (res.success) {
-        toastr.info("修改住户成功");
-        $timeout(function () {
-          $rootScope.$broadcast('refresh-resident', 'edit');
-          cancel();
-        }, 500);
-      } else {
-        toastr.info(res.message);
-      }
-    })
-  }
 }
 
 function importHouseholdCtl() {
@@ -2347,7 +2363,7 @@ angular.module('logMdl', [])
   .controller('visitorCtl', visitorCtl)
   .controller('detailOpenCtl', detailOpenCtl);
 
-function logCtl($modal){
+function logCtl($modal) {
   var vm = this;
   vm.openModal = openModal;
 
@@ -2355,7 +2371,7 @@ function logCtl($modal){
     $modal.open({
       templateUrl: './views/log/' + template + '.html',
       controller: controller,
-      backdrop:'static',
+      backdrop: 'static',
       size: 'sm',
       resolve: {
         items: function () {
@@ -2368,7 +2384,7 @@ function logCtl($modal){
   }
 }
 
-function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+function openCtl($rootScope, $modal, $location, $state, logSrv, mainSrv, toastr) {
   var vm = this;
   vm.getOpenList = getOpenList;
   vm.selectPage = selectPage;
@@ -2381,24 +2397,24 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   vm.pageNo = parseInt($location.search().id);
 
   getPartitions();
-  function getPartitions(){
-    mainSrv.getPartitions().then(function(res){
+  function getPartitions() {
+    mainSrv.getPartitions().then(function (res) {
       console.log(res);
       vm.block.partitions = res.data;
     })
   }
 
   vm.getBlocks = getBlocks;
-  function getBlocks(id){
-    mainSrv.getBlocks(id).then(function(res){
+  function getBlocks(id) {
+    mainSrv.getBlocks(id).then(function (res) {
       console.log(res);
       vm.block.blocks = res.data;
     })
   }
 
   vm.getUnits = getUnits;
-  function getUnits(id){
-    mainSrv.getUnits(id).then(function(res){
+  function getUnits(id) {
+    mainSrv.getUnits(id).then(function (res) {
       console.log(res);
       vm.block.units = res.data;
     })
@@ -2428,9 +2444,9 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   }
 
   function getSearch(obj, cb) {
-    if(obj.et){
-      if(obj.st == obj.et){
-        obj.et = obj.et+24*60*60*1000-1;
+    if (obj.et) {
+      if (obj.st == obj.et) {
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
       }
     }
     console.log(obj);
@@ -2448,17 +2464,14 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
     }
   }
 
-  function getOpenList(pageNo, obj){
+  function getOpenList(pageNo, obj) {
     logSrv.getIntercom(pageNo, 7, obj).then(function (res) {
       console.log('获取开门日志列表: ', res);
       vm.pages = [];
-      if(res.success){
-        if(res.data.list){
+      if (res.success) {
+        if (res.data.list) {
           for (var i = 0; i < res.data.list.length; i++) {
             switch (res.data.list[i].type) {
-              case 0:
-                res.data.list[i].type = '呼叫';
-                break;
               case 1:
                 res.data.list[i].type = '刷卡';
                 break;
@@ -2466,7 +2479,16 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
                 res.data.list[i].type = '密码';
                 break;
               case 3:
-                res.data.list[i].type = 'APP';
+                res.data.list[i].type = '手机开门';
+                break;
+              case 4:
+                res.data.list[i].type = '人脸开门';
+                break;
+              case 5:
+                res.data.list[i].type = '身份证开门';
+                break;
+              case 6:
+                res.data.list[i].type = '扫码开门';
                 break;
               default:
                 res.data.list[i].type = '';
@@ -2512,16 +2534,33 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
           }
           mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
         }
-      }else if(res.code == "401"){
+      } else if (res.code == "401") {
         $rootScope.$broadcast('tokenExpired');
       } else {
         toastr.info(res.message);
       }
     })
   }
+  vm.gallary = gallary;
+  function gallary(url) {
+    $modal.open({
+      templateUrl: './views/log/gallary.html',
+      controller: function($scope, items){
+        $scope.url = items;
+      },
+      size: 'sm',
+      resolve: {
+        items: function () {
+          if (url) {
+            return url;
+          }
+        }
+      }
+    })
+  }
 }
 
-function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
+function removeCtl($rootScope, $location, $state, logSrv, mainSrv) {
   var vm = this;
   vm.getRemoveList = getRemoveList;
   vm.selectPage = selectPage;
@@ -2566,12 +2605,12 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
     }
   }
 
-  function getRemoveList(pageNo, obj){
+  function getRemoveList(pageNo, obj) {
     logSrv.getAlarmInfo(pageNo, 7, obj).then(function (res) {
       console.log('获取公卡列表: ', res);
       vm.pages = [];
-      if(res.success){
-        if(res.data.list){
+      if (res.success) {
+        if (res.data.list) {
           for (var i = 0; i < res.data.list.length; i++) {
             switch (res.data.list[i].type) {
               case 0:
@@ -2607,7 +2646,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
           }
           mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
         }
-      }else if(res.code == "401"){
+      } else if (res.code == "401") {
         $rootScope.$broadcast('tokenExpired');
       } else {
         toastr.info(res.message);
@@ -2617,7 +2656,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
   }
 }
 
-function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+function visitorCtl($rootScope, $location, $modal, $state, logSrv, mainSrv, toastr) {
   var vm = this;
 
   vm.getVisitorList = getVisitorList;
@@ -2648,14 +2687,32 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
   }
 
   function getSearch(obj, cb) {
-    if(obj.endTime){
-      if(obj.startTime == obj.endTime){
-        obj.endTime = obj.endTime+24*60*60*1000-1;
+    if (obj.endTime) {
+      if (obj.startTime == obj.endTime) {
+        obj.endTime = obj.endTime + 24 * 60 * 60 * 1000 - 1;
       }
     }
     console.log(obj);
     mainSrv.getSearch(obj, cb);
     $location.search('id', 1);
+  }
+
+  vm.gallary = gallary;
+  function gallary(url) {
+    $modal.open({
+      templateUrl: './views/log/gallary.html',
+      controller: function($scope, items){
+        $scope.url = items;
+      },
+      size: 'sm',
+      resolve: {
+        items: function () {
+          if (url) {
+            return url;
+          }
+        }
+      }
+    })
   }
 
   function selectPage(tag, pageNo) {
@@ -2668,11 +2725,11 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
     }
   }
 
-  function getVisitorList(pageNo, obj){
-    logSrv.getVisitorList(pageNo, 7, obj).then(function(res){
+  function getVisitorList(pageNo, obj) {
+    logSrv.getVisitorList(pageNo, 7, obj).then(function (res) {
       vm.pages = [];
-      if(res.success){
-        if(res.data.list){
+      if (res.success) {
+        if (res.data.list) {
           vm.visitorList = res.data.list;
           vm.pagesNum = Math.ceil(res.data.total / 7);
           vm.pagesTotal = res.data.total;
@@ -2689,7 +2746,7 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
           }
           mainSrv.pagination(vm.pagesNum, pagesSplit, vm.pages, vm.pageNo);
         }
-      }else if(res.code == "401"){
+      } else if (res.code == "401") {
         $rootScope.$broadcast('tokenExpired');
       } else {
         toastr.info(res.message);
@@ -2699,7 +2756,7 @@ function visitorCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
 
 }
 
-function detailOpenCtl(items, $modalInstance){
+function detailOpenCtl(items, $modalInstance) {
   var vm = this;
   vm.model = items;
   console.log(items);

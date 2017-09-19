@@ -67,7 +67,7 @@
 
   <div class="prop-button-group pull-right m-b-sm">
     <button class="btn btn-sm btn-primary m-r-sm"
-            ng-click="householdVm.openAside()">
+            ng-click="householdVm.openAside('aside.demo.tpl.html', 'createHouseholdCtl as createVm')">
       添加住户
     </button>
     <!--<button class="btn btn-sm btn-primary m-r-sm"-->
@@ -101,13 +101,13 @@
       </td>
       <td>
         <a class="m-r-sm" href="javascript:;"
-           ng-click="doorVm.openModal('modal-household-detail','detailHouseholdCtl as detailVm', item)">
+           ng-click="householdVm.openAside('aside-household-edit.html', 'createHouseholdCtl as editVm', item)">
           详情
         </a>
-        <a class="m-r-sm" href="javascript:;"
-           ng-click="doorVm.openModal('modal-household-edit','editHouseholdCtl as editVm', item)">
-          修改
-        </a>
+        <!--<a class="m-r-sm" href="javascript:;"-->
+           <!--ng-click="doorVm.openModal('modal-household-edit','editHouseholdCtl as editVm', item)">-->
+          <!--修改-->
+        <!--</a>-->
         <a href="javascript:;"
            ng-click="doorVm.openModal('modal-alarm','doorAlarm as dAlarmVm', item)">
           删除
@@ -115,10 +115,6 @@
       </td>
     </tr>
   </table>
-
-  <!--<div class="no-data flex-center flex-column">-->
-    <!--暂无数据-->
-  <!--</div>-->
 
 </div>
 <div class="m-t-lg text-center"

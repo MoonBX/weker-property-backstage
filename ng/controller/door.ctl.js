@@ -44,7 +44,7 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
 
   if($stateParams.home){
     $location.search('home',null);
-    openModal('modal-household-create', 'createHouseholdCtl as createVm');
+    openModal('aside.demo.tpl', 'createHouseholdCtl as createVm');
   }
 
   function openModal(template, controller, item) {
@@ -101,13 +101,20 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
   }
 
   vm.openAside = openAside;
-  function openAside(){
+  function openAside(url, controller, item){
     console.log('open');
     $aside.open({
-      templateUrl: 'views/door/aside.demo.tpl.html',
+      templateUrl: 'views/door/'+url,
       backdrop: 'static',
       placement: 'right',
-      controller: 'createHouseholdCtl as createVm'
+      controller: controller,
+      resolve: {
+        items: function () {
+          if (item) {
+            return item;
+          }
+        }
+      }
     });
   }
 
@@ -409,12 +416,10 @@ function detailHouseholdCtl(items, $modalInstance) {
   }
 }
 
-function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, toastr) {
+function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSrv, mainSrv, toastr, items) {
   var vm = this;
   vm.postList = {};
   vm.block = {};
-
-  vm.createResident = createResident;
   vm.cancel = cancel;
 
   vm.getBlocks = getBlocks;
@@ -424,8 +429,24 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
 
   //vm.userType_make_me = false;
 
-  vm.title = '添加住户';
-  getPartition();
+  if(items){
+    vm.title = '详情';
+    console.log(items);
+    vm.postList = items;
+    getCardInfo(vm.postList.idCard);
+    checkEntranceExist(vm.postList.partitionId);
+    vm.userEffectStatus = 0;
+    check_userType(items.userType);
+    vm.createResident = editResident;
+  }else{
+    vm.title = '新建住户';
+    getPartition();
+    vm.postList.userType = 0;
+    vm.userType_make_me = true;
+    vm.postList.effectiveType = 0;
+    vm.userEffectStatus = 0;
+    vm.createResident = createResident;
+  }
 
   function transform(obj) {
     var arr = [];
@@ -434,11 +455,6 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     }
     return arr;
   }
-
-  vm.postList.userType = 0;
-  vm.userType_make_me = true;
-  vm.postList.effectiveType = 0;
-  vm.userEffectStatus = 0;
 
   vm.userType_change_to_effectiveTime = userType_change_to_effectiveTime;
   function userType_change_to_effectiveTime(value) {
@@ -541,24 +557,20 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
         console.log(res);
         if(res.success){
           vm.idCardList = res.data;
-          //if(cardNo == vm.idCardList.identityNum){
-            vm.idCardCheck = 1;
-          //}else{
-          //  toastr.info('匹配身份证失败');
-          //  vm.idCardCheck = 2;
-          //}
+          vm.idCardCheck = 1;
+          if(vm.idCardList.mobile){
+            vm.postList.mobile = vm.idCardList.mobile;
+          }
         }else{
           toastr.info('匹配身份证失败');
           vm.idCardCheck = 2;
         }
-
       })
     }else{
       toastr.info('请输入正确的身份证号码');
       vm.idCardCheck = 0;
     }
   }
-
 
   vm.isEntranceExist = false;
   function checkEntranceExist(partitionId){
@@ -571,6 +583,23 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     })
   }
 
+  function check_userType(value) {
+    console.log(value);
+    if (value == 0) {
+      vm.userType_make_me = true;
+      vm.userEffectStatus = 0;
+      vm.postList.effectiveType = 0;
+    } else if (value == 1) {
+      vm.userType_make_me = false;
+      vm.userEffectStatus = 1;
+      vm.postList.effectiveType = 1;
+    } else {
+      vm.userType_make_me = false;
+      vm.userEffectStatus = 2;
+      vm.postList.effectiveType = 1;
+    }
+  }
+
   vm.back = back;
   function back(){
     vm.householdStep = 1;
@@ -579,7 +608,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
   vm.householdStep = 1;
   function createResident(obj) {
     console.log(obj);
-    if ($scope.houseForm.$valid&&vm.postList.idCard == vm.idCardList.identityNum) {
+    if ($scope.houseForm.$valid&&vm.postList.idCard == vm.idCardList.identityNum&&vm.isEntranceExist) {
       if (obj.effectiveEndTime) {
         if (obj.effectiveStartTime == obj.effectiveEndTime) {
           obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
@@ -595,11 +624,14 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
           var faceObj = {};
           faceObj.id = vm.idCardList.id;
           faceObj.mobile = obj.mobile;
+          console.log(faceObj);
           doorSrv.uploadFaceImage(faceObj).then(function(res){
             if(res.success){
               toastr.info("新建住户成功");
-              $rootScope.$broadcast('refresh-resident', 'create');
-              vm.householdStep = 2;
+              $timeout(function () {
+                $rootScope.$broadcast('refresh-resident', 'create');
+                cancel();
+              }, 500);
             }
           })
         } else {
@@ -612,14 +644,49 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
     }
   }
 
-  //var arr = [];
-  //var cardBox = myFrame.window.document.getElementById("cardBox");
-  //var cardBoxLen = $(cardBox).children('.row').length;
-  //for (var i = 0; i < cardBoxLen; i++) {
-  //  if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
-  //    arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
-  //  }
-  //}
+  function editResident(obj) {
+    var objNew;
+    if (obj.effectiveEndTime) {
+      if (obj.effectiveStartTime == obj.effectiveEndTime) {
+        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+      }
+    }
+    if (vm.userType_make_me) obj.effectiveType = 0;
+    else obj.effectiveType = 1;
+
+    objNew = {
+      id: obj.id,
+      name: obj.name,
+      userType: obj.userType,
+      mobile: obj.mobile,
+      idCard: obj.idCard,
+      partitionId: obj.partitionId,
+      partitionName: obj.partitionName,
+      blockId: obj.blockId,
+      blockName: obj.blockName,
+      unitId: obj.unitId,
+      unitName: obj.unitName,
+      roomNoId: obj.roomNoId,
+      roomNo: obj.roomNo,
+      effectiveType: obj.effectiveType,
+      effectiveStartTime: obj.effectiveStartTime,
+      effectiveEndTime: obj.effectiveEndTime,
+      cardTypeNames: obj.cardTypeNames
+    };
+    console.log(objNew);
+    doorSrv.editResident(objNew).then(function (res) {
+      console.log(res);
+      if (res.success) {
+        toastr.info("修改住户成功");
+        $timeout(function () {
+          $rootScope.$broadcast('refresh-resident', 'edit');
+          cancel();
+        }, 500);
+      } else {
+        toastr.info(res.message);
+      }
+    })
+  }
 
   function cancel() {
     $modalInstance.dismiss('cancel');
@@ -704,58 +771,7 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
     }
   }
 
-  function editResident(obj) {
-    var objNew;
-    var arr = [];
-    var cardBox = myFrame.window.document.getElementById("cardBox");
-    var cardBoxLen = $(cardBox).children('.row').length;
-    for (var i = 0; i < cardBoxLen; i++) {
-      if ($(cardBox).children('.row').eq(i).children("input")[0].value) {
-        arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
-      }
-    }
-    if (obj.effectiveEndTime) {
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-      }
-    }
-    if (vm.userType_make_me) obj.effectiveType = 0;
-    else obj.effectiveType = 1;
 
-    obj.cardTypeNames = arr.join(',');
-    objNew = {
-      id: obj.id,
-      name: obj.name,
-      userType: obj.userType,
-      mobile: obj.mobile,
-      idCard: obj.idCard,
-      partitionId: obj.partitionId,
-      partitionName: obj.partitionName,
-      blockId: obj.blockId,
-      blockName: obj.blockName,
-      unitId: obj.unitId,
-      unitName: obj.unitName,
-      roomNoId: obj.roomNoId,
-      roomNo: obj.roomNo,
-      effectiveType: obj.effectiveType,
-      effectiveStartTime: obj.effectiveStartTime,
-      effectiveEndTime: obj.effectiveEndTime,
-      cardTypeNames: obj.cardTypeNames
-    };
-    console.log(objNew);
-    doorSrv.editResident(objNew).then(function (res) {
-      console.log(res);
-      if (res.success) {
-        toastr.info("修改住户成功");
-        $timeout(function () {
-          $rootScope.$broadcast('refresh-resident', 'edit');
-          cancel();
-        }, 500);
-      } else {
-        toastr.info(res.message);
-      }
-    })
-  }
 }
 
 function importHouseholdCtl() {
