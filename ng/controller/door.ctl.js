@@ -48,11 +48,11 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
   }
 
   function openModal(template, controller, item) {
-    $modal.open({
+    $aside.open({
       templateUrl: './views/door/' + template + '.html',
       controller: controller,
       backdrop:'static',
-      size: 'sm',
+      placement: 'right',
       resolve: {
         items: function () {
           if (item) {
@@ -102,7 +102,6 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
 
   vm.openAside = openAside;
   function openAside(url, controller, item){
-    console.log('open');
     $aside.open({
       templateUrl: 'views/door/'+url,
       backdrop: 'static',

@@ -1323,15 +1323,15 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
 
   if($stateParams.home){
     $location.search('home',null);
-    openModal('modal-household-create', 'createHouseholdCtl as createVm');
+    openModal('aside.demo.tpl', 'createHouseholdCtl as createVm');
   }
 
   function openModal(template, controller, item) {
-    $modal.open({
+    $aside.open({
       templateUrl: './views/door/' + template + '.html',
       controller: controller,
       backdrop:'static',
-      size: 'sm',
+      placement: 'right',
       resolve: {
         items: function () {
           if (item) {
@@ -1381,7 +1381,6 @@ function householdCtl($rootScope, $aside, $scope, $location, $state, $modal, $st
 
   vm.openAside = openAside;
   function openAside(url, controller, item){
-    console.log('open');
     $aside.open({
       templateUrl: 'views/door/'+url,
       backdrop: 'static',
@@ -1887,7 +1886,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
   vm.householdStep = 1;
   function createResident(obj) {
     console.log(obj);
-    if ($scope.houseForm.$valid&&vm.postList.idCard == vm.idCardList.identityNum) {
+    if ($scope.houseForm.$valid&&vm.postList.idCard == vm.idCardList.identityNum&&vm.isEntranceExist) {
       if (obj.effectiveEndTime) {
         if (obj.effectiveStartTime == obj.effectiveEndTime) {
           obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
@@ -2472,6 +2471,9 @@ function openCtl($rootScope, $modal, $location, $state, logSrv, mainSrv, toastr)
         if (res.data.list) {
           for (var i = 0; i < res.data.list.length; i++) {
             switch (res.data.list[i].type) {
+              case 0:
+                res.data.list[i].type = '呼叫';
+                break;
               case 1:
                 res.data.list[i].type = '刷卡';
                 break;
@@ -3985,8 +3987,8 @@ angular.module('mainApi', [])
 
 mainSrv.$inject = ['$q', '$http'];
 function mainSrv($q, $http){
-  var server = "http://192.168.23.241:8082";
-  //var server = "http://114.55.143.170:8082";
+  //var server = "http://192.168.23.241:8082";
+  var server = "http://114.55.143.170:8082";
   // var server = "http://116.62.39.38:8081";
 
   var mainList = {
