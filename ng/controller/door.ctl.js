@@ -638,22 +638,32 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
     }
   }
 
-  check_userType(items.userType);
-  function check_userType(value) {
-    if (value == 0) {
-      vm.userType_make_me = true;
-      vm.userEffectStatus = 0;
-      vm.postList.effectiveType = 0;
-    } else if (value == 1) {
-      vm.userType_make_me = false;
-      vm.userEffectStatus = 1;
-      vm.postList.effectiveType = 1;
-    } else {
-      vm.userType_make_me = false;
-      vm.userEffectStatus = 2;
-      vm.postList.effectiveType = 1;
-    }
-  }
+  //check_userType(items.userType);
+  //function check_userType(value) {
+  //  if(!items.effectiveType){
+  //    if (value == 0) {
+  //      vm.userType_make_me = true;
+  //      vm.userEffectStatus = 0;
+  //      vm.postList.effectiveType = 0;
+  //    } else if (value == 1) {
+  //      vm.userType_make_me = false;
+  //      vm.userEffectStatus = 1;
+  //      vm.postList.effectiveType = 1;
+  //    } else {
+  //      vm.userType_make_me = false;
+  //      vm.userEffectStatus = 2;
+  //      vm.postList.effectiveType = 1;
+  //    }
+  //  }else{
+  //    if(items.effectiveType == 1){
+  //      vm.userType_make_me = true;
+  //      vm.postList.effectiveType = 0;
+  //    }else{
+  //      vm.userType_make_me = false;
+  //      vm.postList.effectiveType = 1;
+  //    }
+  //  }
+  //}
 
   function editResident(obj) {
     var objNew;

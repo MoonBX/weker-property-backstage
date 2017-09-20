@@ -105,29 +105,29 @@
 
     </div>
 
-    <div class="row m-b-md" ng-if="editVm.isEntranceExist">
+    <div class="row m-b-md" ng-if="editVm.postList.effectiveType != null">
       <label class="w-label-control" style="width: 65px;">有效时间:</label>
       <div class="pull-left m-r-lg" style="line-height: 27px">
-        <label class="ui-checks" ng-if="editVm.userEffectStatus == 0 || editVm.userEffectStatus == 1">
+        <label class="ui-checks" ng-if="editVm.postList.userType == 0 || editVm.postList.userType == 1">
           <input type="radio" name="a"
                  ng-model="editVm.postList.effectiveType"
                  ng-value="0"
                  ng-click="editVm.radio_change()"
-                 ng-checked="editVm.userType_make_me">
+                 ng-checked="editVm.postList.effectiveType == 0">
           <i></i>
           永久
         </label>
-        <label class="ui-checks m-l-xs" ng-if="editVm.userEffectStatus == 2 || editVm.userEffectStatus == 1">
+        <label class="ui-checks m-l-xs" ng-if="editVm.postList.userType == 2 || editVm.postList.userType == 1">
           <input type="radio" name="a"
                  ng-value="1"
                  ng-model="editVm.postList.effectiveType"
                  ng-click="editVm.radio_change()"
-                 ng-checked="!editVm.userType_make_me">
+                 ng-checked="editVm.postList.effectiveType != 0">
           <i></i>
           手动配置
         </label>
       </div>
-      <div class="pull-left" ng-if="(editVm.userEffectStatus == 2 || editVm.userEffectStatus == 1)&&!editVm.userType_make_me">
+      <div class="pull-left" ng-if="editVm.postList.effectiveType != 0">
         <input type="text"
                ng-model="editVm.postList.effectiveStartTime"
                class="form-control w-sm pull-left m-r-xs bg-date"
