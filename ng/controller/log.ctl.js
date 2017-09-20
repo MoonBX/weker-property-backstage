@@ -120,12 +120,12 @@ function openCtl($rootScope, $modal, $location, $state, logSrv, mainSrv, toastr)
               case 0:
                 res.data.list[i].type = '呼叫';
                 break;
-              case 1:
-                res.data.list[i].type = '刷卡';
-                break;
-              case 2:
-                res.data.list[i].type = '密码';
-                break;
+              //case 1:
+              //  res.data.list[i].type = '刷卡';
+              //  break;
+              //case 2:
+              //  res.data.list[i].type = '密码';
+              //  break;
               case 3:
                 res.data.list[i].type = '手机开门';
                 break;

@@ -117,6 +117,8 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
         $timeout(function(){
           window.location.href = '/#/login';
         }, 500)
+      }else if(res.code == "401"){
+        $rootScope.$broadcast('tokenExpired');
       }else{
         toastr.info(res.message);
       }
