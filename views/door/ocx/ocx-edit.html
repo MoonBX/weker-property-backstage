@@ -5,7 +5,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <title>读写器测试(Javascript)</title>
+  <link rel="stylesheet" href="jquery.toast.min.css">
   <script src="jquery.min.js"></script>
+  <script src="jquery.toast.min.js"></script>
 </head>
 
 <script language="javascript" type="text/javascript">
@@ -63,7 +65,7 @@
 
     i = document.ReaderTest.YW_RequestCard(1, 82);
     if (i < 0) {
-      alert("请将卡片放置于读卡器上");
+      test('请将卡片放置于读卡器上')
       return;
     }
     i = document.ReaderTest.YW_AntiCollide(1);
@@ -79,12 +81,14 @@
     for (var k = 0; k < length; k++) {
       if ("IC-" + document.ReaderTest.ConvertCardNo(vCardNo, 2).slice(2) == cardBox.children(".row").eq(k).children("input")[0].value) {
         length = 0;
+        test('重复读卡')
         break;
       }
     }
 
     for (var j = 0; j < length; j++) {
       if ("IC-" + document.ReaderTest.ConvertCardNo(vCardNo, 2).slice(2) == cardBox.children(".row").eq(j).children("input")[0].value) {
+        test('重复读卡')
         break;
       }
 
@@ -110,6 +114,14 @@
     }
 
     i = document.ReaderTest.YW_CardSelect(1, LenCardNo, vCardNo);
+  }
+
+  function test(text){
+    $.toast({
+      text : text,
+      hideAfter : 1000,
+      loader: false
+    })
   }
 
 </script>

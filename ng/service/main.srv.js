@@ -7,9 +7,9 @@ angular.module('mainApi', [])
 
 mainSrv.$inject = ['$q', '$http'];
 function mainSrv($q, $http){
-  //var server = "http://192.168.23.241:8082";
-  var server = "http://114.55.143.170:8082";
-  // var server = "http://116.62.39.38:8081";
+  var server = "http://192.168.23.241:8082";
+  //var server = "http://114.55.143.170:8082";
+   //var server = "http://116.62.39.38:8081";
 
   var mainList = {
     getHttpRoot: function(){
