@@ -111,7 +111,9 @@
       <td>{{item.type || '-'}}</td>
       <td>
         <div>
-          <img ng-src="{{item.snapshot}}" alt="..." style="width: 88px;">
+          <img ng-src="{{item.snapshot}}"
+               alt="..." style="width: 88px;"
+               ng-click="openVm.gallary(item.snapshot)">
         </div>
       </td>
       <td>
