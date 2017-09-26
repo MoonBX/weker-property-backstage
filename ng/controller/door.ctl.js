@@ -680,8 +680,8 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
         obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
       }
     }
-    if (vm.userType_make_me) obj.effectiveType = 0;
-    else obj.effectiveType = 1;
+    //if (vm.userType_make_me) obj.effectiveType = 0;
+    //else obj.effectiveType = 1;
 
     obj.cardTypeNames = arr.join(',');
     objNew = {

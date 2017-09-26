@@ -84,12 +84,12 @@
       <label class="m-r-sm text-right pull-left w-label-control" style="width: 60px;">公告时间:</label>
       <div class="pull-left" style="width: 320px;">
         <input type="text"
-               ng-model="crudVm.model.st"
+               ng-model="crudVm.model.effectiveStartTime"
                class="w-form-control pull-left w-sm m-r-xs bg-date"
                data-date-format="yyyy-MM-dd"
                data-date-type="number"
-               data-min-date="{{crudVm.model.st || 'today'}}"
-               data-max-date="{{crudVm.model.et || '2050-12-31'}}"
+               data-min-date="{{crudVm.model.effectiveStartTime || 'today'}}"
+               data-max-date="{{crudVm.model.effectiveEndTime || '2050-12-31'}}"
                data-autoclose="1"
                bs-datepicker
                name="date1"
@@ -97,11 +97,11 @@
         />
         <label class="pull-left time-rod">—</label>
         <input type="text"
-               ng-model="crudVm.model.et"
+               ng-model="crudVm.model.effectiveEndTime"
                class="w-form-control pull-left w-sm bg-date"
                data-date-format="yyyy-MM-dd"
                data-date-type="number"
-               data-min-date="{{crudVm.model.st}}"
+               data-min-date="{{crudVm.model.effectiveStartTime}}"
                data-autoclose="1"
                bs-datepicker
                name="date2"

@@ -91,7 +91,7 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
   function getSearch(obj, cb) {
     if (obj.et) {
       if (obj.st == obj.et) {
-        obj.st = obj.et + 24 * 60 * 60 * 1000 - 1;
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
       }
     }
     mainSrv.getSearch(obj, cb);
@@ -447,8 +447,8 @@ function announceCrudCtl($rootScope, $scope, $timeout, $modalInstance, propertyS
       var a = getTreeNode();
       obj.fenceIds = a.fenceIds;
       obj.unitIds = a.unitIds;
-      if (obj.st == obj.et) {
-        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1000;
+      if (obj.effectiveStartTime == obj.effectiveEndTime) {
+        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
       }
       console.log('create announce obj: ', obj);
       propertySrv.createAnnounce(obj).then(function (res) {

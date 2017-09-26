@@ -3,64 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <script language="javascript" src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
 </head>
 <body>
-<script language="javascript" type="text/javascript">
+<script>
   try {
-    var obj = new ActiveXObject("YW60X.yw60xCtrl.1");
+    var rfidreader = YOWORFIDReader.createNew();
+  } catch (e) {
+    alert("创建读卡器连接失败，请先下载安装！");
+    top.location = "http://www.youwokeji.com.cn/CloudReader/YOWORFIDReaderCloudForWeb.exe";
   }
-  catch(e) {
-    alert("请先安装读卡器插件");
-    window.navigate("http://www.youwokeji.com.cn/yw60xocxSetup.exe");
+  if (!rfidreader.TryConnect()) {
+    alert("浏览器不支持，请更换浏览器后重试！");
   }
 
-
-  function OpenReader()
-  {
-    if(document.ReaderTest.YW_USBHIDInitial()<=0)
+  rfidreader.onResult(function(resultdata)
     {
-      document.getElementById("CardNo").value = "û�ж�����";
-      return false;
+      switch(resultdata.FunctionID)
+      {
+        case 0:
+          if(resultdata.Result>0) {
+            document.getElementById("CardNo").value = "IC-"+resultdata.strData.slice(2);
+          }
+          break;
+      }
     }
-    return true;
-  }
+  );
 
-  function CloseReader()
-  {
-    return document.ReaderTest.YW_USBHIDFree();
-  }
-
-  function RequestCard()
-  {
-    var i;
-    var CardType;
-    var vCardNo;
-    var LenCardNo;
-
-
-    if(OpenReader()==false)return;
-
-    i = document.ReaderTest.YW_RequestCard(1,82);
-    console.log(i);
-    if(i<0) {
-      document.getElementById("CardNo0").value ="请将卡片放置于读卡器上";
-      alert("请将卡片放置于读卡器上");
-      return;
-    }
-    i = document.ReaderTest.YW_AntiCollide(1);
-    if(i<0) {
-      console.log(document.getElementById("CardNo0").value);
-      document.getElementById("CardNo0").value ="请将卡片放置于读卡器上1";
-      return;
-    }
-
-
-    LenCardNo = document.ReaderTest.OutData1Size;
-    vCardNo    = document.ReaderTest.OutData1;
-
-    document.getElementById("CardNo").value = "IC-"+document.ReaderTest.ConvertCardNo(vCardNo, 3).slice(2);
-    i = document.ReaderTest.YW_CardSelect(1,LenCardNo,vCardNo);
-    console.log(document.ReaderTest);
+  function Start() {
+    var OrderID = 0;
+    var FormatID = 1;
+    rfidreader.Repeat = 0;
+    rfidreader.HaltAfterSuccess = 0;
+    rfidreader.BeepOnSuccess = 0;
+    rfidreader.RequestTypeACardNo(FormatID, OrderID);
   }
 </script>
 <style>
@@ -87,13 +63,10 @@
     line-height: inherit
   }
 </style>
-<object id="ReaderTest" style="display: none"
-        classid="clsid:167E1838-7388-4A24-86DE-985B91F0FFBF">
-</object>
 <input type="text"
        class="w-md p-h-xs m-r-xs w-form-control"
        id="CardNo"
        name="CardNo">
-<a href="javascript:;" onclick="RequestCard()">读取</a>
+<a href="javascript:;" onclick="Start()">读取</a>
 </body>
 </html>

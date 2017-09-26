@@ -11,23 +11,23 @@
     <div class="item m-b-sm">
       <label class="w-label-control">发布时间:</label>
       <input type="text"
-             ng-model="announceVm.selectList.effectiveStartTime"
+             ng-model="announceVm.selectList.st"
              class="form-control w-sm pull-left m-r-xs bg-date"
              data-date-format="yyyy-MM-dd"
              data-date-type="number"
              data-min-date="02/10/86"
-             data-max-date="{{announceVm.selectList.effectiveEndTime}}"
+             data-max-date="{{announceVm.selectList.et}}"
              data-autoclose="1"
              bs-datepicker
              placeholder=""
       />
       <label class="pull-left datepicker-split">—</label>
       <input type="text"
-             ng-model="announceVm.selectList.effectiveEndTime"
+             ng-model="announceVm.selectList.et"
              class="form-control w-sm pull-left m-r-lg bg-date"
              data-date-format="yyyy-MM-dd"
              data-date-type="number"
-             data-min-date="{{announceVm.selectList.effectiveStartTime}}"
+             data-min-date="{{announceVm.selectList.st}}"
              data-autoclose="1"
              bs-datepicker
              placeholder=""
