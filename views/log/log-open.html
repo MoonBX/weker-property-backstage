@@ -87,25 +87,19 @@
 
   <table class="table table-striped wk-table">
     <thead>
-    <th width="10%">单元信息</th>
+    <th width="20%">单元信息</th>
     <th width="10%">设备类型</th>
-    <th width="5%">姓名</th>
-    <th width="10%">手机号码</th>
-    <th width="8%">卡类型</th>
-    <th width="10%">卡号</th>
+    <th width="10%">姓名</th>
     <th width="10%">通话时长</th>
-    <th width="10%">开门时间</th>
-    <th width="10%">日志类型</th>
+    <th width="20%">开门时间</th>
+    <th width="10%">开门类型</th>
     <th width="10%">缩略图</th>
-    <th width="7%">操作</th>
+    <th width="10%">操作</th>
     </thead>
     <tr ng-repeat="item in openVm.intercomList">
       <td>{{item.blockName || '-'}}</td>
       <td>{{item.deviceType || '-'}}</td>
       <td>{{item.name || '-'}}</td>
-      <td>{{item.mobile || '-'}}</td>
-      <td>{{item.cardType}}</td>
-      <td>{{item.cardNo || '-'}}</td>
       <td>{{item.duration || '-'}}</td>
       <td>{{item.unlockTime | date: 'yyyy-MM-dd HH:mm:ss' || '-'}}</td>
       <td>{{item.type || '-'}}</td>
