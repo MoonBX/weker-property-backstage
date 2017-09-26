@@ -8,13 +8,6 @@
     </div>
 
     <div class="item m-b-sm">
-      <label class="w-label-control">手机号码: </label>
-      <input type="text"
-             class="form-control w-sm pull-left m-r-lg"
-             ng-model="openVm.selectList.mobile">
-    </div>
-
-    <div class="item m-b-sm">
       <label class="w-label-control">设备类型: </label>
       <div class="w-sm pull-left m-r-lg">
         <my-select model="openVm.selectList.deviceType"
@@ -25,11 +18,11 @@
     </div>
 
     <div class="item m-b-sm">
-      <label class="w-label-control">日志类型: </label>
+      <label class="w-label-control">开门类型: </label>
       <div class="w-sm pull-left m-r-lg">
         <my-select model="openVm.selectList.type"
                    placeholder="请选择日志类型"
-                   opt-list="['呼叫', '刷卡', '密码', 'APP']">
+                   opt-list="['呼叫', '刷卡', '密码', '手机开门', '人脸开门', '身份证开门', '扫码开门']">
         </my-select>
       </div>
     </div>
@@ -87,13 +80,13 @@
 
   <table class="table table-striped wk-table">
     <thead>
-    <th width="20%">单元信息</th>
+    <th width="18%">单元信息</th>
     <th width="10%">设备类型</th>
     <th width="10%">姓名</th>
     <th width="10%">通话时长</th>
-    <th width="20%">开门时间</th>
-    <th width="10%">开门类型</th>
-    <th width="10%">缩略图</th>
+    <th width="18%">开门时间</th>
+    <th width="12%">开门类型</th>
+    <th width="12%">缩略图</th>
     <th width="10%">操作</th>
     </thead>
     <tr ng-repeat="item in openVm.intercomList">

@@ -144,7 +144,16 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal)
                 res.data.list[i].type = '密码';
                 break;
               case 3:
-                res.data.list[i].type = 'APP';
+                res.data.list[i].type = '手机开门';
+                break;
+              case 4:
+                res.data.list[i].type = '人脸开门';
+                break;
+              case 5:
+                res.data.list[i].type = '身份证开门';
+                break;
+              case 6:
+                res.data.list[i].type = '扫码开门';
                 break;
               default:
                 res.data.list[i].type = '';
