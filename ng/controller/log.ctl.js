@@ -28,7 +28,7 @@ function logCtl($modal){
   }
 }
 
-function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal){
   var vm = this;
   vm.getOpenList = getOpenList;
   vm.selectPage = selectPage;
@@ -96,6 +96,24 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
     console.log(obj);
     mainSrv.getSearch(obj, cb);
     $location.search('id', 1);
+  }
+
+  vm.gallary = gallary;
+  function gallary(url) {
+    $modal.open({
+      templateUrl: './views/log/gallary.html',
+      controller: function($scope, items){
+        $scope.url = items;
+      },
+      size: 'sm',
+      resolve: {
+        items: function () {
+          if (url) {
+            return url;
+          }
+        }
+      }
+    })
   }
 
   function selectPage(tag, pageNo) {
