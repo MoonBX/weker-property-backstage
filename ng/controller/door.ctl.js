@@ -140,7 +140,7 @@ function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorS
   }
 
   function getResidentList(pageNo, obj) {
-    doorSrv.getResident(pageNo, 7, obj).then(function (res) {
+    doorSrv.getResident(pageNo, 10, obj).then(function (res) {
       console.log('获取住户列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -172,9 +172,9 @@ function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorS
             res.data.list[i].prop = 'household';
           }
           vm.residentList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -273,7 +273,7 @@ function commonCtl($rootScope, $location, $state, $stateParams, $modal, doorSrv,
   }
 
   function getCommonList(pageNo, obj) {
-    doorSrv.getPublicCard(pageNo, 7, obj).then(function (res) {
+    doorSrv.getPublicCard(pageNo, 10, obj).then(function (res) {
       console.log('获取公卡列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -325,9 +325,9 @@ function commonCtl($rootScope, $location, $state, $stateParams, $modal, doorSrv,
             res.data.list[i].prop = 'common';
           }
           vm.commonList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -541,11 +541,11 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
           arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
         }
       }
-      if (obj.effectiveEndTime) {
-        if (obj.effectiveStartTime == obj.effectiveEndTime) {
-          obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-        }
-      }
+      //if (obj.effectiveEndTime) {
+      //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
+      //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+      //  }
+      //}
       if (vm.userType_make_me) {
         obj.effectiveType = 0
       }
@@ -675,11 +675,11 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
         arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
       }
     }
-    if (obj.effectiveEndTime) {
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-      }
-    }
+    //if (obj.effectiveEndTime) {
+    //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
+    //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+    //  }
+    //}
     //if (vm.userType_make_me) obj.effectiveType = 0;
     //else obj.effectiveType = 1;
 

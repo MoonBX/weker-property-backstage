@@ -56,7 +56,14 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
     if(path == 'login'){
       mainVm.isLogin = false;
     }else{
-      mainVm.isLogin = true;
+      if(!localStorage.wekerToken){
+        mainVm.isLogin = false;
+        //$location.path('login');
+        window.location.href = '/#/login';
+        //toastr.info('请先登录')
+      }else{
+        mainVm.isLogin = true;
+      }
     }
     for(var i=0;i<arr.length;i++){
       mainVm.asideArr[i].isActive = false;
@@ -148,6 +155,9 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
       }else{
         mainVm.asideArr[i].isActive = false;
       }
+    }
+    if(sessionStorage.filterList){
+      sessionStorage.removeItem('filterList');
     }
     if(!mainVm.currentNav.item){
       cfpLoadingBar.start();

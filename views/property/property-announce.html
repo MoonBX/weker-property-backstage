@@ -35,14 +35,14 @@
     </div>
 
     <div class="item m-b-md">
-      <label class="w-label-control">推送状态: </label>
+      <label class="w-label-control">发布状态: </label>
       <div class="w-sm pull-left m-r-lg">
         <select ui-select2
                 ng-model="announceVm.selectList.status"
                 data-placeholder="请选择公告状态"
                 name="status">
           <option value=""></option>
-          <option ng-value="1">发布</option>
+          <option ng-value="1">发布中</option>
           <option ng-value="2">已过期</option>
           <option ng-value="3">未生效</option>
         </select>

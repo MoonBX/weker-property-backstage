@@ -1,4 +1,4 @@
-<div class="app-aside-inner affix-top" bs-affix style="position: static;">
+<div class="app-aside-inner affix-top" bs-affix style="position: relative;">
   <div class="app-aside-body hover">
     <div class="text-right p-h-md m-v-lg">
       <!--<i class="glyphicon glyphicon-align-justify text-lt cursor-pointer"-->
@@ -10,7 +10,7 @@
     <div class="text-center">
       <span class="text-lt cursor-pointer" style="font-weight: 700;">Weker物业管理平台</span>
     </div>
-    <nav style="z-index: 10">
+    <nav style="z-index: 10; min-height: 700px">
       <ul class="nav p-v-lg m-t-lg">
         <li ng-class="{'active': item.isActive}" ng-repeat="item in mainVm.asideArr">
           <a href="javascript:;" style="font-size: 14px" ng-click="mainVm.switchNavItem($index)">
@@ -32,5 +32,9 @@
         </li>
       </ul>
     </nav>
+  </div>
+  <div style="position: absolute; bottom: 20px;flex-direction:column;width:100%;display: flex;align-items: center;justify-content: center; font-size: 12px">
+    <div>客服热线: 400-150-5088</div>
+    <div>运维热线: 400-150-5088</div>
   </div>
 </div>

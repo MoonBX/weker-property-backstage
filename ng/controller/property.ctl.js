@@ -109,7 +109,7 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
   }
 
   function getAnnounce(pageNo, obj) {
-    propertySrv.getAnnounce(pageNo, 7, obj).then(function (res) {
+    propertySrv.getAnnounce(pageNo, 10, obj).then(function (res) {
       console.log('获取公告列表: ', res);
       vm.pages = [];
       if (res.success) {
@@ -120,7 +120,7 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
                 res.data.list[i].status = '撤销';
                 break;
               case 1:
-                res.data.list[i].status = '发布';
+                res.data.list[i].status = '发布中';
                 break;
               case 2:
                 res.data.list[i].status = '已过期';
@@ -135,9 +135,9 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
           }
 
           vm.announceList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -222,7 +222,7 @@ function complainCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv
   }
 
   function getComplaintList(pageNo, obj) {
-    propertySrv.getComplaint(pageNo, 7, obj).then(function (res) {
+    propertySrv.getComplaint(pageNo, 10, obj).then(function (res) {
       console.log('获取投诉列表: ', res);
       vm.pages = [];
       if (res.success) {
@@ -244,9 +244,9 @@ function complainCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv
             res.data.list[i].prop = 'complain';
           }
           vm.complainList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -325,7 +325,7 @@ function repairCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv) 
   }
 
   function getRepairList(pageNo, obj) {
-    propertySrv.getComplaint(pageNo, 7, obj).then(function (res) {
+    propertySrv.getComplaint(pageNo, 10, obj).then(function (res) {
       vm.pages = [];
       if (res.success) {
         if (res.data.list) {
@@ -346,9 +346,9 @@ function repairCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv) 
             res.data.list[i].prop = 'repair';
           }
           vm.repairList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -643,6 +643,9 @@ function detailComplainCtl(propertySrv, $modalInstance, items) {
     console.log('投诉详情: ', items);
     vm.model = items;
     vm.model.snapshotArr = vm.model.snapshot.split(';');
+    if(vm.model.snapshotArr[vm.model.snapshotArr.length-1] == ""){
+      vm.model.snapshotArr.splice(vm.model.snapshotArr.length-1, 1)
+    }
   }
 
   function getComplaintDetail() {
@@ -664,6 +667,9 @@ function detailRepairCtl(propertySrv, $modalInstance, items) {
     console.log('投诉详情: ', items);
     vm.model = items;
     vm.model.snapshotArr = vm.model.snapshot.split(';');
+    if(vm.model.snapshotArr[vm.model.snapshotArr.length-1] == ""){
+      vm.model.snapshotArr.splice(vm.model.snapshotArr.length-1, 1)
+    }
   }
 
   function getRepairDetail() {
@@ -691,7 +697,7 @@ function payRepairCtl($scope, $modalInstance, propertySrv, toastr) {
 
   function getStandard() {
     propertySrv.getStandard().then(function (res) {
-      console.log('收费标准列表: ', res)
+      console.log('收费标准列表: ', res);
       vm.standardList = res.data;
     })
   }
@@ -702,7 +708,7 @@ function payRepairCtl($scope, $modalInstance, propertySrv, toastr) {
       propertySrv.createStandard(obj).then(function (res) {
         console.log('创建收费标准: ', res);
         if (res.success) {
-          vm.model = {};
+          //vm.model = {};
           $scope.$broadcast('refresh-standard-list');
           toastr.info('创建成功!')
         } else {

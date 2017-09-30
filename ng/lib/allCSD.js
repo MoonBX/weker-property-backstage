@@ -1926,8 +1926,8 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
         obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
       }
     }
-    if (vm.userType_make_me) obj.effectiveType = 0;
-    else obj.effectiveType = 1;
+    //if (vm.userType_make_me) obj.effectiveType = 0;
+    //else obj.effectiveType = 1;
 
     obj.cardTypeNames = arr.join(',');
     objNew = {
@@ -2295,7 +2295,7 @@ function logCtl($modal){
   }
 }
 
-function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
+function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal){
   var vm = this;
   vm.getOpenList = getOpenList;
   vm.selectPage = selectPage;
@@ -2365,6 +2365,24 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
     $location.search('id', 1);
   }
 
+  vm.gallary = gallary;
+  function gallary(url) {
+    $modal.open({
+      templateUrl: './views/log/gallary.html',
+      controller: function($scope, items){
+        $scope.url = items;
+      },
+      size: 'sm',
+      resolve: {
+        items: function () {
+          if (url) {
+            return url;
+          }
+        }
+      }
+    })
+  }
+
   function selectPage(tag, pageNo) {
     if (tag == 'next') {
       $state.go('log.open', {id: vm.pageNo + 1});
@@ -2393,7 +2411,16 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr){
                 res.data.list[i].type = '密码';
                 break;
               case 3:
-                res.data.list[i].type = 'APP';
+                res.data.list[i].type = '手机开门';
+                break;
+              case 4:
+                res.data.list[i].type = '人脸开门';
+                break;
+              case 5:
+                res.data.list[i].type = '身份证开门';
+                break;
+              case 6:
+                res.data.list[i].type = '扫码开门';
                 break;
               default:
                 res.data.list[i].type = '';
@@ -2647,7 +2674,7 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
   function getSearch(obj, cb) {
     if (obj.et) {
       if (obj.st == obj.et) {
-        obj.st = obj.et + 24 * 60 * 60 * 1000 - 1;
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
       }
     }
     mainSrv.getSearch(obj, cb);
@@ -3003,8 +3030,8 @@ function announceCrudCtl($rootScope, $scope, $timeout, $modalInstance, propertyS
       var a = getTreeNode();
       obj.fenceIds = a.fenceIds;
       obj.unitIds = a.unitIds;
-      if (obj.st == obj.et) {
-        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1000;
+      if (obj.effectiveStartTime == obj.effectiveEndTime) {
+        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
       }
       console.log('create announce obj: ', obj);
       propertySrv.createAnnounce(obj).then(function (res) {
@@ -3716,9 +3743,9 @@ angular.module('mainApi', [])
 
 mainSrv.$inject = ['$q', '$http'];
 function mainSrv($q, $http){
-  var server = "http://192.168.23.241:8082";
+  //var server = "http://192.168.23.241:8082";
   //var server = "http://114.55.143.170:8082";
-   //var server = "http://116.62.39.38:8081";
+   var server = "http://116.62.39.38:8081";
 
   var mainList = {
     getHttpRoot: function(){

@@ -99,7 +99,7 @@ function deviceCtl($rootScope, $modal, $location, $state, deviceSrv, mainSrv){
   }
 
   function getDevice(pageNo, obj){
-    deviceSrv.getDevice(pageNo,7, obj).then(function(res){
+    deviceSrv.getDevice(pageNo,10, obj).then(function(res){
       console.log('获取设备列表: ',res);
       vm.pages = [];
       if(res.success){
@@ -148,9 +148,9 @@ function deviceCtl($rootScope, $modal, $location, $state, deviceSrv, mainSrv){
           }
 
           vm.deviceList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;

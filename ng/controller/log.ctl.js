@@ -127,7 +127,7 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal)
   }
 
   function getOpenList(pageNo, obj){
-    logSrv.getIntercom(pageNo, 7, obj).then(function (res) {
+    logSrv.getIntercom(pageNo, 10, obj).then(function (res) {
       console.log('获取开门日志列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -183,9 +183,9 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal)
             }
           }
           vm.intercomList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -254,7 +254,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
   }
 
   function getRemoveList(pageNo, obj){
-    logSrv.getAlarmInfo(pageNo, 7, obj).then(function (res) {
+    logSrv.getAlarmInfo(pageNo, 10, obj).then(function (res) {
       console.log('获取公卡列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -278,9 +278,9 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
             }
           }
           vm.removeList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
