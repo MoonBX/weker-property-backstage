@@ -12,20 +12,7 @@
 </head>
 
 <script>
-  var ua = navigator.userAgent;
-  if(ua.indexOf("Mac OS X") !== -1){
-    alert("读卡器不支持OSX系统, 请使用Windows系统进行读卡操作");
-  }else{
-    try {
-      var rfidreader = YOWORFIDReader.createNew();
-    } catch (e) {
-      alert("创建读卡器连接失败，请先下载安装！");
-      top.location = "http://www.youwokeji.com.cn/CloudReader/YOWORFIDReaderCloudForWeb.exe";
-    }
-  }
-  if (!rfidreader.TryConnect()) {
-    alert("浏览器不支持，请更换浏览器后重试！");
-  }
+
 
   window.onload = function () {
     var val = parent.document.getElementById("CardTypeName").value;
@@ -33,10 +20,24 @@
     arr.pop();
     if(arr.length){
       for (var l = 0; l < arr.length; l++) {
-        $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (l + 1) + ':</label> <input type="search" class="w-sm p-h-xs m-r-md pull-left w-form-control" name="CardNo' + l + '" id="CardNo' + l + '" value="'+arr[l]+'"></div>');
+        $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (l + 1) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + l + '" id="CardNo' + l + '" value="'+arr[l]+'"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
       }
     }else{
-      $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡1:</label> <input type="search" class="w-sm p-h-xs m-r-md pull-left w-form-control" name="CardNo0" id="CardNo0"></div>');
+      $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡1:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo0" id="CardNo0"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+    }
+    var ua = navigator.userAgent;
+    if(ua.indexOf("Mac OS X") !== -1){
+      alert("读卡器不支持OSX系统, 请使用Windows系统进行读卡操作");
+    }else{
+      try {
+        var rfidreader = YOWORFIDReader.createNew();
+      } catch (e) {
+        alert("创建读卡器连接失败，请先下载安装！");
+        top.location = "http://www.youwokeji.com.cn/CloudReader/YOWORFIDReaderCloudForWeb.exe";
+      }
+    }
+    if (!rfidreader.TryConnect()) {
+      alert("浏览器不支持，请更换浏览器后重试！");
     }
   }
 
@@ -74,11 +75,11 @@
               if (!firstInput && currentIndex == 0) {
                 document.getElementById("CardNo0").value = "IC-" + resultdata.strData.slice(2);
               } else if (firstInput && currentIndex == 0) {
-                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="search" class="w-sm p-h-xs m-r-md pull-left w-form-control" name="CardNo1" id="CardNo1"></div>');
+                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo1" id="CardNo1"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
                 document.getElementById("CardNo1").value = "IC-" + resultdata.strData.slice(2);
               } else if (currentIndex > 0 && currentIndex < 9) {
 //            console.log(currentIndex);
-                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (currentIndex + 2) + ':</label> <input type="search" class="w-sm p-h-xs m-r-md pull-left w-form-control" name="CardNo' + (currentIndex + 1) + '" id="CardNo' + (currentIndex + 1) + '"></div>');
+                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (currentIndex + 2) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + (currentIndex + 1) + '" id="CardNo' + (currentIndex + 1) + '"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
                 document.getElementById("CardNo" + (currentIndex + 1)).value = "IC-" + resultdata.strData.slice(2);
               } else {
                 console.log('end');
@@ -107,6 +108,10 @@
       hideAfter: 1000,
       loader: false
     })
+  }
+
+  function lay(x){
+    $(x).prev().val("");
   }
 </script>
 
@@ -233,6 +238,12 @@
   }
   .text-center{
     text-align: center;
+  }
+
+  .row img{
+    position: relative;
+    top: 8px;
+    left: 4px;
   }
 </style>
 <div class="other-info p-v-md p-h-sm clearfix">

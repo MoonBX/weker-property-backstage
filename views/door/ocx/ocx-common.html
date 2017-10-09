@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Title</title>
+  <script src="jquery.min.js"></script>
   <script language="javascript" src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
 </head>
 <body>
@@ -43,6 +44,10 @@
     rfidreader.BeepOnSuccess = 0;
     rfidreader.RequestTypeACardNo(FormatID, OrderID);
   }
+
+  function lay(x){
+    $(x).prev().val("");
+  }
 </script>
 <style>
   body{
@@ -67,11 +72,19 @@
     font-size: inherit;
     line-height: inherit
   }
+  img{
+    position: relative;
+    top: 3px;
+    left: -2px
+  }
 </style>
 <input type="text"
        class="w-md p-h-xs m-r-xs w-form-control"
+       disabled
+       value="10"
        id="CardNo"
        name="CardNo">
+<img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)" style="margin-top: 7px">
 <a href="javascript:;" onclick="Start()">读取</a>
 </body>
 </html>
