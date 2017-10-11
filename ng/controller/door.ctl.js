@@ -427,6 +427,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
   }
 
   vm.postList.userType = 0;
+  vm.postList.effectiveStartTime = new Date();
   vm.userType_make_me = true;
   vm.postList.effectiveType = 0;
   vm.userEffectStatus = 0;
@@ -519,6 +520,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
   }
 
   vm.isEntranceExist = false;
+
   function checkEntranceExist(partitionId){
     console.log(vm.postList.unitId);
     doorSrv.checkExist(partitionId, vm.postList.unitId).then(function(res){
@@ -546,6 +548,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
       //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
       //  }
       //}
+      obj.effectiveStartTime = Date.parse(obj.effectiveStartTime)
       if (vm.userType_make_me) {
         obj.effectiveType = 0
       }

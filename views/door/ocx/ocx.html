@@ -67,11 +67,11 @@
               if (!firstInput && currentIndex == 0) {
                 document.getElementById("CardNo0").value = "IC-" + resultdata.strData.slice(2);
               } else if (firstInput && currentIndex == 0) {
-                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo1" id="CardNo1"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo1" id="CardNo1" disabled><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
                 document.getElementById("CardNo1").value = "IC-" + resultdata.strData.slice(2);
               } else if (currentIndex > 0 && currentIndex < 9) {
 //            console.log(currentIndex);
-                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (currentIndex + 2) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + (currentIndex + 1) + '" id="CardNo' + (currentIndex + 1) + '"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (currentIndex + 2) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + (currentIndex + 1) + '" id="CardNo' + (currentIndex + 1) + '" disabled><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
                 document.getElementById("CardNo" + (currentIndex + 1)).value = "IC-" + resultdata.strData.slice(2);
               } else {
                 console.log('end');

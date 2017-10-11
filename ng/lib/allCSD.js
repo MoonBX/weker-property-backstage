@@ -265,7 +265,14 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
     if(path == 'login'){
       mainVm.isLogin = false;
     }else{
-      mainVm.isLogin = true;
+      if(!localStorage.wekerToken){
+        mainVm.isLogin = false;
+        //$location.path('login');
+        window.location.href = '/#/login';
+        //toastr.info('请先登录')
+      }else{
+        mainVm.isLogin = true;
+      }
     }
     for(var i=0;i<arr.length;i++){
       mainVm.asideArr[i].isActive = false;
@@ -357,6 +364,9 @@ function mainCtl($scope, $rootScope, $location, $state, $timeout, cfpLoadingBar,
       }else{
         mainVm.asideArr[i].isActive = false;
       }
+    }
+    if(sessionStorage.filterList){
+      sessionStorage.removeItem('filterList');
     }
     if(!mainVm.currentNav.item){
       cfpLoadingBar.start();
@@ -1142,7 +1152,7 @@ function deviceCtl($rootScope, $modal, $location, $state, deviceSrv, mainSrv){
   }
 
   function getDevice(pageNo, obj){
-    deviceSrv.getDevice(pageNo,7, obj).then(function(res){
+    deviceSrv.getDevice(pageNo,10, obj).then(function(res){
       console.log('获取设备列表: ',res);
       vm.pages = [];
       if(res.success){
@@ -1191,9 +1201,9 @@ function deviceCtl($rootScope, $modal, $location, $state, deviceSrv, mainSrv){
           }
 
           vm.deviceList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -1386,7 +1396,7 @@ function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorS
   }
 
   function getResidentList(pageNo, obj) {
-    doorSrv.getResident(pageNo, 7, obj).then(function (res) {
+    doorSrv.getResident(pageNo, 10, obj).then(function (res) {
       console.log('获取住户列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -1418,9 +1428,9 @@ function householdCtl($rootScope, $location, $state, $modal, $stateParams, doorS
             res.data.list[i].prop = 'household';
           }
           vm.residentList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -1519,7 +1529,7 @@ function commonCtl($rootScope, $location, $state, $stateParams, $modal, doorSrv,
   }
 
   function getCommonList(pageNo, obj) {
-    doorSrv.getPublicCard(pageNo, 7, obj).then(function (res) {
+    doorSrv.getPublicCard(pageNo, 10, obj).then(function (res) {
       console.log('获取公卡列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -1571,9 +1581,9 @@ function commonCtl($rootScope, $location, $state, $stateParams, $modal, doorSrv,
             res.data.list[i].prop = 'common';
           }
           vm.commonList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -1673,6 +1683,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
   }
 
   vm.postList.userType = 0;
+  vm.postList.effectiveStartTime = new Date();
   vm.userType_make_me = true;
   vm.postList.effectiveType = 0;
   vm.userEffectStatus = 0;
@@ -1765,6 +1776,7 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
   }
 
   vm.isEntranceExist = false;
+
   function checkEntranceExist(partitionId){
     console.log(vm.postList.unitId);
     doorSrv.checkExist(partitionId, vm.postList.unitId).then(function(res){
@@ -1787,11 +1799,12 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
           arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
         }
       }
-      if (obj.effectiveEndTime) {
-        if (obj.effectiveStartTime == obj.effectiveEndTime) {
-          obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-        }
-      }
+      //if (obj.effectiveEndTime) {
+      //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
+      //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+      //  }
+      //}
+      obj.effectiveStartTime = Date.parse(obj.effectiveStartTime)
       if (vm.userType_make_me) {
         obj.effectiveType = 0
       }
@@ -1921,11 +1934,11 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
         arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
       }
     }
-    if (obj.effectiveEndTime) {
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-      }
-    }
+    //if (obj.effectiveEndTime) {
+    //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
+    //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+    //  }
+    //}
     //if (vm.userType_make_me) obj.effectiveType = 0;
     //else obj.effectiveType = 1;
 
@@ -2394,7 +2407,7 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal)
   }
 
   function getOpenList(pageNo, obj){
-    logSrv.getIntercom(pageNo, 7, obj).then(function (res) {
+    logSrv.getIntercom(pageNo, 10, obj).then(function (res) {
       console.log('获取开门日志列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -2450,9 +2463,9 @@ function openCtl($rootScope, $location, $state, logSrv, mainSrv, toastr, $modal)
             }
           }
           vm.intercomList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -2521,7 +2534,7 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
   }
 
   function getRemoveList(pageNo, obj){
-    logSrv.getAlarmInfo(pageNo, 7, obj).then(function (res) {
+    logSrv.getAlarmInfo(pageNo, 10, obj).then(function (res) {
       console.log('获取公卡列表: ', res);
       vm.pages = [];
       if(res.success){
@@ -2545,9 +2558,9 @@ function removeCtl($rootScope, $location, $state, logSrv, mainSrv){
             }
           }
           vm.removeList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -2692,7 +2705,7 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
   }
 
   function getAnnounce(pageNo, obj) {
-    propertySrv.getAnnounce(pageNo, 7, obj).then(function (res) {
+    propertySrv.getAnnounce(pageNo, 10, obj).then(function (res) {
       console.log('获取公告列表: ', res);
       vm.pages = [];
       if (res.success) {
@@ -2703,7 +2716,7 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
                 res.data.list[i].status = '撤销';
                 break;
               case 1:
-                res.data.list[i].status = '发布';
+                res.data.list[i].status = '发布中';
                 break;
               case 2:
                 res.data.list[i].status = '已过期';
@@ -2718,9 +2731,9 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
           }
 
           vm.announceList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -2805,7 +2818,7 @@ function complainCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv
   }
 
   function getComplaintList(pageNo, obj) {
-    propertySrv.getComplaint(pageNo, 7, obj).then(function (res) {
+    propertySrv.getComplaint(pageNo, 10, obj).then(function (res) {
       console.log('获取投诉列表: ', res);
       vm.pages = [];
       if (res.success) {
@@ -2827,9 +2840,9 @@ function complainCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv
             res.data.list[i].prop = 'complain';
           }
           vm.complainList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -2908,7 +2921,7 @@ function repairCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv) 
   }
 
   function getRepairList(pageNo, obj) {
-    propertySrv.getComplaint(pageNo, 7, obj).then(function (res) {
+    propertySrv.getComplaint(pageNo, 10, obj).then(function (res) {
       vm.pages = [];
       if (res.success) {
         if (res.data.list) {
@@ -2929,9 +2942,9 @@ function repairCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv) 
             res.data.list[i].prop = 'repair';
           }
           vm.repairList = res.data.list;
-          vm.pagesNum = Math.ceil(res.data.total / 7);
+          vm.pagesNum = Math.ceil(res.data.total / 10);
           vm.pagesTotal = res.data.total;
-          var pagesSplit = 7;
+          var pagesSplit = 10;
 
           if (vm.pageNo == 1 && vm.pageNo == vm.pagesNum) {
             vm.isFirstPage = true;
@@ -3226,6 +3239,9 @@ function detailComplainCtl(propertySrv, $modalInstance, items) {
     console.log('投诉详情: ', items);
     vm.model = items;
     vm.model.snapshotArr = vm.model.snapshot.split(';');
+    if(vm.model.snapshotArr[vm.model.snapshotArr.length-1] == ""){
+      vm.model.snapshotArr.splice(vm.model.snapshotArr.length-1, 1)
+    }
   }
 
   function getComplaintDetail() {
@@ -3247,6 +3263,9 @@ function detailRepairCtl(propertySrv, $modalInstance, items) {
     console.log('投诉详情: ', items);
     vm.model = items;
     vm.model.snapshotArr = vm.model.snapshot.split(';');
+    if(vm.model.snapshotArr[vm.model.snapshotArr.length-1] == ""){
+      vm.model.snapshotArr.splice(vm.model.snapshotArr.length-1, 1)
+    }
   }
 
   function getRepairDetail() {
@@ -3274,7 +3293,7 @@ function payRepairCtl($scope, $modalInstance, propertySrv, toastr) {
 
   function getStandard() {
     propertySrv.getStandard().then(function (res) {
-      console.log('收费标准列表: ', res)
+      console.log('收费标准列表: ', res);
       vm.standardList = res.data;
     })
   }
@@ -3285,7 +3304,7 @@ function payRepairCtl($scope, $modalInstance, propertySrv, toastr) {
       propertySrv.createStandard(obj).then(function (res) {
         console.log('创建收费标准: ', res);
         if (res.success) {
-          vm.model = {};
+          //vm.model = {};
           $scope.$broadcast('refresh-standard-list');
           toastr.info('创建成功!')
         } else {
@@ -3746,6 +3765,7 @@ function mainSrv($q, $http){
   //var server = "http://192.168.23.241:8082";
   //var server = "http://114.55.143.170:8082";
    var server = "http://116.62.39.38:8081";
+  //var server = " http://192.168.22.139:8082";
 
   var mainList = {
     getHttpRoot: function(){

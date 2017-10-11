@@ -71,7 +71,7 @@
       <td>{{item.mobile || '-'}}</td>
       <td>{{item.cardType || '-'}}</td>
       <td>{{item.cardNo || '-'}}</td>
-      <td>{{item.vaildType || '-'}}</td>
+      <td>{{item.startTime | date: 'yyyy-MM-dd'}} 至 {{item.endTime | date: 'yyyy-MM-dd'}}</td>
       <td>
         <span class="state-circle" ng-class="{'circle-red': item.status == '过期', 'circle-green': item.status == '正常'}"></span>
         {{item.status || '-'}}

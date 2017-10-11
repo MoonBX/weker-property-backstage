@@ -50,7 +50,7 @@
       <label class="w-label-control" style="width: 60px;">收费标准:</label>
       <div class="pull-left m-r-lg">
         <input type="text"
-               ng-pattern="/^[0-9]*$/"
+               ng-pattern="/^[0-9]+([.]{1}[0-9]+){0,1}$/"
                ng-maxlength="10"
                class="w-sm p-h-xs m-r-xs w-form-control"
                ng-model="payVm.model.price"

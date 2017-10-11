@@ -11,109 +11,7 @@
   <script language="javascript" src="http://127.0.0.1:8008/YOWOCloudRFIDReader.js"></script>
 </head>
 
-<script>
 
-
-  window.onload = function () {
-    var val = parent.document.getElementById("CardTypeName").value;
-    var arr = val.split(" ");
-    arr.pop();
-    if(arr.length){
-      for (var l = 0; l < arr.length; l++) {
-        $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (l + 1) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + l + '" id="CardNo' + l + '" value="'+arr[l]+'"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
-      }
-    }else{
-      $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡1:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo0" id="CardNo0"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
-    }
-    var ua = navigator.userAgent;
-    if(ua.indexOf("Mac OS X") !== -1){
-      alert("读卡器不支持OSX系统, 请使用Windows系统进行读卡操作");
-    }else{
-      try {
-        var rfidreader = YOWORFIDReader.createNew();
-      } catch (e) {
-        alert("创建读卡器连接失败，请先下载安装！");
-        top.location = "http://www.youwokeji.com.cn/CloudReader/YOWORFIDReaderCloudForWeb.exe";
-      }
-    }
-    if (!rfidreader.TryConnect()) {
-      alert("浏览器不支持，请更换浏览器后重试！");
-    }
-  }
-
-  rfidreader.onResult(function (resultdata) {
-    var cardBox = $('.cards-box');
-    var currentIndex = cardBox.children(".row").length - 1;
-    var firstInput = cardBox.children(".row").eq(0).children("input")[0].value;
-    var length = cardBox.children(".row").length;
-
-    switch (resultdata.FunctionID) {
-
-      case 0:
-        if (resultdata.Result > 0) {
-          for (var k = 0; k < length; k++) {
-            if ("IC-" + resultdata.strData.slice(2) == cardBox.children(".row").eq(k).children("input")[0].value) {
-              length = 0;
-              test('重复读卡')
-              break;
-            }
-          }
-
-          for (var j = 0; j < length; j++) {
-            if ("IC-" + resultdata.strData.slice(2) == cardBox.children(".row").eq(j).children("input")[0].value) {
-              test('重复读卡');
-              length = 0;
-              break;
-            }
-
-            if (!cardBox.children(".row").eq(j).children("input")[0].value) {
-              document.getElementById("CardNo" + j).value = "IC-" + resultdata.strData.slice(2);
-              break;
-            }
-
-            if (j == cardBox.children(".row").length - 1) {
-              if (!firstInput && currentIndex == 0) {
-                document.getElementById("CardNo0").value = "IC-" + resultdata.strData.slice(2);
-              } else if (firstInput && currentIndex == 0) {
-                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo1" id="CardNo1"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
-                document.getElementById("CardNo1").value = "IC-" + resultdata.strData.slice(2);
-              } else if (currentIndex > 0 && currentIndex < 9) {
-//            console.log(currentIndex);
-                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (currentIndex + 2) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + (currentIndex + 1) + '" id="CardNo' + (currentIndex + 1) + '"><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
-                document.getElementById("CardNo" + (currentIndex + 1)).value = "IC-" + resultdata.strData.slice(2);
-              } else {
-                console.log('end');
-              }
-            }
-          }
-        }else{
-          test('读卡失败')
-        }
-        break;
-    }
-  });
-
-  function Start() {
-    var OrderID = 0;
-    var FormatID = 1;
-    rfidreader.Repeat = 0;
-    rfidreader.HaltAfterSuccess = 0;
-    rfidreader.BeepOnSuccess = 0;
-    rfidreader.RequestTypeACardNo(FormatID, OrderID);
-  }
-
-  function test(text) {
-    $.toast({
-      text: text,
-      hideAfter: 1000,
-      loader: false
-    })
-  }
-
-  function lay(x){
-    $(x).prev().val("");
-  }
-</script>
 
 <body>
 <style>
@@ -247,13 +145,120 @@
   }
 </style>
 <div class="other-info p-v-md p-h-sm clearfix">
-  <div class="pull-left p-sm cards-box" id="cardBox"></div>
+  <div class="pull-left p-sm cards-box" id="cardBox">
+
+  </div>
   <div class="text-center p-h-sm" style="width: auto; overflow: auto">
     <button class="btn btn-primary btn-md p-h-lg m-b-md" name="RequestCard1" value="寻卡" onClick="Start()">读取卡号
     </button>
     <div class="m-b-md"><a href="http://www.youwokeji.com.cn/CloudReader/YOWORFIDReaderCloudForWeb.exe">下载插件</a></div>
   </div>
 </div>
+
+<script>
+  window.onload = function(){
+    var ua = navigator.userAgent;
+    if(ua.indexOf("Mac OS X") !== -1){
+      alert("读卡器不支持OSX系统, 请使用Windows系统进行读卡操作");
+    }else{
+      try {
+        var rfidreader = YOWORFIDReader.createNew();
+      } catch (e) {
+        alert("创建读卡器连接失败，请先下载安装！");
+        top.location = "http://www.youwokeji.com.cn/CloudReader/YOWORFIDReaderCloudForWeb.exe";
+      }
+    }
+    if (!rfidreader.TryConnect()) {
+      alert("浏览器不支持，请更换浏览器后重试！");
+    }
+  }
+    var val = parent.document.getElementById("CardTypeName").value;
+    var arr = val.split(" ");
+    arr.pop();
+    console.log(arr);
+    if(arr.length){
+      for (var l = 0; l < arr.length; l++) {
+        $('#cardBox').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (l + 1) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + l + '" id="CardNo' + l + '" value="'+arr[l]+'" disabled><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+      }
+    }else{
+      $('.cards-box').append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡1:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo0" id="CardNo0" disabled><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+    }
+
+
+
+  rfidreader.onResult(function (resultdata) {
+    var cardBox = $('.cards-box');
+    var currentIndex = cardBox.children(".row").length - 1;
+    var firstInput = cardBox.children(".row").eq(0).children("input")[0].value;
+    var length = cardBox.children(".row").length;
+
+    switch (resultdata.FunctionID) {
+
+      case 0:
+        if (resultdata.Result > 0) {
+          console.log('in');
+          for (var k = 0; k < length; k++) {
+            if ("IC-" + resultdata.strData.slice(2) == cardBox.children(".row").eq(k).children("input")[0].value) {
+              length = 0;
+              test('重复读卡')
+              break;
+            }
+          }
+          for (var j = 0; j < length; j++) {
+            if ("IC-" + resultdata.strData.slice(2) == cardBox.children(".row").eq(j).children("input")[0].value) {
+              test('重复读卡');
+              length = 0;
+              break;
+            }
+
+            if (!cardBox.children(".row").eq(j).children("input")[0].value) {
+              document.getElementById("CardNo" + j).value = "IC-" + resultdata.strData.slice(2);
+              break;
+            }
+
+            if (j == cardBox.children(".row").length - 1) {
+              if (!firstInput && currentIndex == 0) {
+                document.getElementById("CardNo0").value = "IC-" + resultdata.strData.slice(2);
+              } else if (firstInput && currentIndex == 0) {
+                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡2:</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo1" id="CardNo1" disabled><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+                document.getElementById("CardNo1").value = "IC-" + resultdata.strData.slice(2);
+              } else if (currentIndex > 0 && currentIndex < 9) {
+//            console.log(currentIndex);
+                cardBox.append('<div class="row m-b-sm"> <label class="w-label-control" style="width:40px;">卡' + (currentIndex + 2) + ':</label> <input type="text" class="w-sm p-h-xs pull-left w-form-control" name="CardNo' + (currentIndex + 1) + '" id="CardNo' + (currentIndex + 1) + '" disabled><img src="delete.png" alt="" width="15px" height="15px" onclick="lay(this)"></div>');
+                document.getElementById("CardNo" + (currentIndex + 1)).value = "IC-" + resultdata.strData.slice(2);
+              } else {
+                console.log('end');
+              }
+            }
+          }
+        }else{
+          test('读卡失败')
+        }
+        break;
+    }
+  });
+
+  function Start() {
+    var OrderID = 0;
+    var FormatID = 1;
+    rfidreader.Repeat = 0;
+    rfidreader.HaltAfterSuccess = 0;
+    rfidreader.BeepOnSuccess = 0;
+    rfidreader.RequestTypeACardNo(FormatID, OrderID);
+  }
+
+  function test(text) {
+    $.toast({
+      text: text,
+      hideAfter: 1000,
+      loader: false
+    })
+  }
+
+  function lay(x){
+    $(x).prev().val("");
+  }
+</script>
 </body>
 
 

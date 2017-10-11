@@ -87,6 +87,7 @@
     <th width="25%">卡号</th>
     <th>住户身份</th>
     <th>住户状态</th>
+    <th>创建时间</th>
     <th>操作</th>
     </thead>
     <tr ng-repeat="item in householdVm.residentList">
@@ -99,6 +100,7 @@
         <span class="state-circle" ng-class="{'circle-red': item.status == '1', 'circle-green': item.status == '0'}"></span>
         {{item.status_cn || '-'}}
       </td>
+      <td>{{item.gmtCreated | date: 'yyyy-MM-dd'}}</td>
       <td>
         <a class="m-r-sm" href="javascript:;"
            ng-click="doorVm.openModal('modal-household-detail','detailHouseholdCtl as detailVm', item)">
