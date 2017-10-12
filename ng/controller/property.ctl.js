@@ -90,9 +90,9 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
 
   function getSearch(obj, cb) {
     if (obj.et) {
-      if (obj.st == obj.et) {
-        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.st == obj.et) {
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1000;
+      // }
     }
     mainSrv.getSearch(obj, cb);
     $location.search('id', 1);
@@ -202,9 +202,9 @@ function complainCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv
 
   function getSearch(obj, cb) {
     if (obj.endTime) {
-      if (obj.startTime == obj.endTime) {
-        obj.endTime = obj.endTime + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.startTime == obj.endTime) {
+        obj.endTime = obj.endTime + 24 * 60 * 60 * 1000 - 1000;
+      // }
     }
     obj.type = 0;
     mainSrv.getSearch(obj, cb);
@@ -305,9 +305,9 @@ function repairCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv) 
 
   function getSearch(obj, cb) {
     if (obj.et) {
-      if (obj.st == obj.et) {
-        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.st == obj.et) {
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1000;
+      // }
     }
     obj.type = 1;
     mainSrv.getSearch(obj, cb);
@@ -447,9 +447,7 @@ function announceCrudCtl($rootScope, $scope, $timeout, $modalInstance, propertyS
       var a = getTreeNode();
       obj.fenceIds = a.fenceIds;
       obj.unitIds = a.unitIds;
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
-      }
+      obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
       console.log('create announce obj: ', obj);
       propertySrv.createAnnounce(obj).then(function (res) {
         console.log('创建公告成功: ', res);
@@ -521,9 +519,9 @@ function announceCrudCtl($rootScope, $scope, $timeout, $modalInstance, propertyS
       obj.id = items;
       delete obj.status;
       delete obj.partitions;
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.effectiveStartTime == obj.effectiveEndTime) {
+        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
+      // }
       console.log('edit announce obj: ', obj);
       propertySrv.editAnnounceSave(obj).then(function (res) {
         console.log('编辑公告成功', res);

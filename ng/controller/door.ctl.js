@@ -543,11 +543,11 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
           arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
         }
       }
-      //if (obj.effectiveEndTime) {
+      if (obj.effectiveEndTime) {
       //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
-      //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+         obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
       //  }
-      //}
+      }
       obj.effectiveStartTime = Date.parse(obj.effectiveStartTime)
       if (vm.userType_make_me) {
         obj.effectiveType = 0
@@ -678,11 +678,11 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
         arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
       }
     }
-    //if (obj.effectiveEndTime) {
+    if (obj.effectiveEndTime) {
     //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
-    //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+       obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
     //  }
-    //}
+    }
     //if (vm.userType_make_me) obj.effectiveType = 0;
     //else obj.effectiveType = 1;
 
