@@ -1799,11 +1799,11 @@ function createHouseholdCtl($rootScope, $scope, $modalInstance, $timeout, doorSr
           arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
         }
       }
-      //if (obj.effectiveEndTime) {
+      if (obj.effectiveEndTime) {
       //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
-      //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+         obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
       //  }
-      //}
+      }
       obj.effectiveStartTime = Date.parse(obj.effectiveStartTime)
       if (vm.userType_make_me) {
         obj.effectiveType = 0
@@ -1934,11 +1934,11 @@ function editHouseholdCtl($rootScope, doorSrv, $timeout, toastr, items, $modalIn
         arr.push($(cardBox).children('.row').eq(i).children("input")[0].value)
       }
     }
-    //if (obj.effectiveEndTime) {
+    if (obj.effectiveEndTime) {
     //  if (obj.effectiveStartTime == obj.effectiveEndTime) {
-    //    obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
+       obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
     //  }
-    //}
+    }
     //if (vm.userType_make_me) obj.effectiveType = 0;
     //else obj.effectiveType = 1;
 
@@ -2686,9 +2686,9 @@ function announceCtl($rootScope, $location, $state, $stateParams, $modal, proper
 
   function getSearch(obj, cb) {
     if (obj.et) {
-      if (obj.st == obj.et) {
-        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.st == obj.et) {
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1000;
+      // }
     }
     mainSrv.getSearch(obj, cb);
     $location.search('id', 1);
@@ -2798,9 +2798,9 @@ function complainCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv
 
   function getSearch(obj, cb) {
     if (obj.endTime) {
-      if (obj.startTime == obj.endTime) {
-        obj.endTime = obj.endTime + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.startTime == obj.endTime) {
+        obj.endTime = obj.endTime + 24 * 60 * 60 * 1000 - 1000;
+      // }
     }
     obj.type = 0;
     mainSrv.getSearch(obj, cb);
@@ -2901,9 +2901,9 @@ function repairCtl($scope, $rootScope, $location, $state, propertySrv, mainSrv) 
 
   function getSearch(obj, cb) {
     if (obj.et) {
-      if (obj.st == obj.et) {
-        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.st == obj.et) {
+        obj.et = obj.et + 24 * 60 * 60 * 1000 - 1000;
+      // }
     }
     obj.type = 1;
     mainSrv.getSearch(obj, cb);
@@ -3043,9 +3043,7 @@ function announceCrudCtl($rootScope, $scope, $timeout, $modalInstance, propertyS
       var a = getTreeNode();
       obj.fenceIds = a.fenceIds;
       obj.unitIds = a.unitIds;
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
-      }
+      obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
       console.log('create announce obj: ', obj);
       propertySrv.createAnnounce(obj).then(function (res) {
         console.log('创建公告成功: ', res);
@@ -3117,9 +3115,9 @@ function announceCrudCtl($rootScope, $scope, $timeout, $modalInstance, propertyS
       obj.id = items;
       delete obj.status;
       delete obj.partitions;
-      if (obj.effectiveStartTime == obj.effectiveEndTime) {
-        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1;
-      }
+      // if (obj.effectiveStartTime == obj.effectiveEndTime) {
+        obj.effectiveEndTime = obj.effectiveEndTime + 24 * 60 * 60 * 1000 - 1000;
+      // }
       console.log('edit announce obj: ', obj);
       propertySrv.editAnnounceSave(obj).then(function (res) {
         console.log('编辑公告成功', res);
@@ -3762,7 +3760,7 @@ angular.module('mainApi', [])
 
 mainSrv.$inject = ['$q', '$http'];
 function mainSrv($q, $http){
-  //var server = "http://192.168.23.241:8082";
+  // var server = "http://192.168.23.241:8082";
   //var server = "http://114.55.143.170:8082";
    var server = "http://116.62.39.38:8081";
   //var server = " http://192.168.22.139:8082";
