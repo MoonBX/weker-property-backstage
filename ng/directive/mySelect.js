@@ -1,4 +1,4 @@
-/**
+  /**
  * Created by zhongyuqiang on 2017/7/21.
  */
 angular.module('directive.select', [])
